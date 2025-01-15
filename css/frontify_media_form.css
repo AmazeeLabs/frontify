@@ -1,0 +1,19 @@
+.frontify-finder-wrapper {
+  display: none;
+  width: 95vw;
+  max-width: 1070px;
+  height: calc(100vh - 122px);
+  max-height: 800px;
+  margin: 100px auto 22px auto;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+.frontify-wrapper-finder-overlay-shown {
+  display: flex;
+  width: 100%;
+  position: fixed;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(120, 120, 120, 0.4);
+  z-index: 20;
+}

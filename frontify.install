@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Contains Frontify asset  install, uninstall, update hooks.
+ */
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Remove Frontify configuration.
+ */
+function frontify_uninstall(): void {
+  \Drupal::configFactory()->getEditable('frontify.settings')->delete();
+}

@@ -1,0 +1,5 @@
+frontify.settings:
+  route_name: frontify.settings
+  parent: system.admin_config_services
+  title: Frontify
+  description: 'Manage global settings for Frontify Platform.'

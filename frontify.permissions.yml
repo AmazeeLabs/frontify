@@ -1,0 +1,4 @@
+administer frontify:
+  title: 'administer frontify'
+  description: 'Administer Frontify'
+  restrict access: TRUE

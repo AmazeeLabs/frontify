@@ -1,0 +1,12 @@
+.frontify-media-library-wrapper {
+  min-height: 700px;
+}
+
+.frontify-finder-wrapper {
+  display: none;
+  width: 100%;
+  height: calc(100vh - 122px);
+  max-height: 600px;
+  margin: 25px auto 22px auto;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}

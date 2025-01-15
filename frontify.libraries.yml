@@ -1,0 +1,36 @@
+frontify_finder:
+  version: 2.x
+  license:
+    name: MIT
+    url: https://github.com/Frontify/frontify-finder
+    gpl-compatible: true
+  js:
+    https://unpkg.com/@frontify/frontify-finder@latest/dist/index.js: { type: external, minified: true }
+
+frontify_media_library:
+  js:
+    js/frontify_media_library.js: {}
+  css:
+    component:
+      css/frontify_media_library.css: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - frontify/frontify_finder
+frontify_media_form:
+  version: 1.x
+  js:
+    js/frontify_media_form.js: { }
+  css:
+    component:
+      css/frontify_media_form.css: { }
+  dependencies:
+    - core/drupal
+    - frontify/frontify_finder
+
+frontify_once:
+  js:
+    js/frontify_once.js: {}
+  dependencies:
+    - core/once
+    - core/drupalSettings

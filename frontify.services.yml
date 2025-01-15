@@ -1,0 +1,13 @@
+services:
+  frontify.api:
+    class: Drupal\frontify\FrontifyApi
+    arguments: ['@http_client', '@config.factory', '@messenger']
+
+  frontify.directive:
+    class: Drupal\frontify\FrontifyDirective
+
+  frontify.media_library.ui_builder:
+    class: Drupal\frontify\MediaLibraryUiBuilder
+    arguments: [ '@entity_type.manager', '@request_stack', '@views.executable', '@form_builder', '@media_library.opener_resolver' ]
+    decorates: media_library.ui_builder
+    decoration_priority: 1
