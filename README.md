@@ -57,6 +57,76 @@ Drupal fields.
 - GraphiQL: https://frontify.github.io/public-api-explorer/example/current-user
 - Frontify Finder: https://developer.frontify.com/d/XFPCrGNrXQQM/finder#/general/getting-started
 
+## Pre-populate fields
+
+Example code to pre-populate the `alt` and `author` field based on
+Frontify metadata.
+
+### Media Library context with host entity
+
+```php
+/**
+ * Implements hook_ENTITY_TYPE_create().
+ *
+ * Pre-populate Drupal fields based on Frontify metadata
+ * in the Media Library context.
+ */
+function my_custom_frontify_media_create(EntityInterface $entity) {
+  if (
+    $entity->getEntityTypeId() === 'media' &&
+    $entity->bundle() === 'frontify_image' &&
+    $entity->hasField('field_media_frontify_image') &&
+    !$entity->get('field_media_frontify_image')->isEmpty()
+  ) {
+    $entity->set('field_alt', $entity->get('field_media_frontify_image')->name);
+    $metadata = $entity->get('field_media_frontify_image')->metadata;
+    if (!empty($metadata)) {
+      $metadata = json_decode($metadata, TRUE);
+      if (!empty($metadata['author'])) {
+        $entity->set('field_author', $metadata['author']);
+      }
+    }
+  }
+}
+```
+
+### Media add form context
+
+This is a more theoretical example, as the Media add form might not be used
+most of the time, because the main use case is Media Library references
+in host entities.
+
+But there could still be use cases to have standalone media entities, without
+host entities.
+
+```php
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ *
+ * Pre-populate custom fields based on Frontify metadata
+ * in the Media add form context. It will not show up in the add form,
+ * but right after save. So form modes can be used to get better UX.
+ */
+function my_custom_frontify_media_insert(EntityInterface $entity) {
+  if (
+    $entity->getEntityTypeId() === 'media' &&
+    $entity->bundle() === 'frontify_image' &&
+    $entity->hasField('field_media_frontify_image') &&
+    !$entity->get('field_media_frontify_image')->isEmpty()
+  ) {
+    $entity->set('field_alt', $entity->get('field_media_frontify_image')->name);
+    $metadata = $entity->get('field_media_frontify_image')->metadata;
+    if (!empty($metadata)) {
+      $metadata = json_decode($metadata, TRUE);
+      if (!empty($metadata['author'])) {
+        $entity->set('field_author', $metadata['author']);
+      }
+    }
+    $entity->save();
+  }
+}
+```
+
 # Roadmap for contribution
 
 - Create other media types than Image (Video, Document)
