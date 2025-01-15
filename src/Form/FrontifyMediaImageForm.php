@@ -183,13 +183,13 @@ class FrontifyMediaImageForm extends AddFormBase {
       ],
     ];
     $form['container']['frontify_fields'] = [
-      '#title'=> $this->t('Frontify fields'),
+      '#title' => $this->t('Frontify fields'),
       '#type' => 'details',
       '#open' => FALSE,
       '#attributes' => [
         'class' => [
           'frontify-fields',
-          $frontifyDebugMode !== 1 ?  'visually-hidden' : '',
+          $frontifyDebugMode !== 1 ? 'visually-hidden' : '',
         ],
       ],
     ];
@@ -231,19 +231,19 @@ class FrontifyMediaImageForm extends AddFormBase {
       '#submit' => ['::addButtonSubmit'],
       // @todo check why states api is not working here.
       //   using custom javascript for now.
-//      '#states' => [
-//        'enabled' => [
-//          ':input[name="uri"]' => ['filled' => TRUE],
-//        ],
-//      ],
+      //      '#states' => [
+      //        'enabled' => [
+      //          ':input[name="uri"]' => ['filled' => TRUE],
+      //        ],
+      //      ],
       '#ajax' => [
         'callback' => '::updateFormCallback',
         'wrapper' => 'media-library-wrapper',
         'url' => Url::fromRoute('media_library.ui'),
         'options' => [
           'query' => $this->getMediaLibraryState($form_state)->all() + [
-              FormBuilderInterface::AJAX_FORM_REQUEST => TRUE,
-            ],
+            FormBuilderInterface::AJAX_FORM_REQUEST => TRUE,
+          ],
         ],
       ],
     ];

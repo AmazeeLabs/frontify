@@ -1,9 +1,11 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types = 1);
 
 namespace Drupal\frontify;
 
-use Drupal\graphql_directives\DirectiveArguments;
 use Drupal\Component\Serialization\Json;
+use Drupal\graphql_directives\DirectiveArguments;
 
 /**
  * Frontify directives.
@@ -64,7 +66,7 @@ final class FrontifyDirective {
     $ratio = $image['height'] / $image['width'];
     // The image width and height in the response should be the same as the ones
     // sent as parameters.
-    // @todo: Unless the width sent is bigger than the width of the original
+    // @todo Unless the width sent is bigger than the width of the original
     // image, since we should not scale up. TBD what to do in this case.
     $return['width'] = $width;
     $return['height'] = $height ?: round($width * $ratio);
@@ -83,13 +85,13 @@ final class FrontifyDirective {
    * Builds a sizes string from a sizes array.
    *
    * @param array $sizes
-   *  An array of image sizes.
-   *  Example: [
+   *   An array of image sizes.
+   *   Example: [
    *    [400, 390] -> up until 400px screen width, use the 390px image
    *    [800, 780] -> up until 800px screen width, use the 780px image
-   *  ]
+   *   ].
    * @param int $default_width
-   *  The default width to add at the end of the $sizes string.
+   *   The default width to add at the end of the $sizes string.
    *
    * @return string
    */
@@ -117,13 +119,13 @@ final class FrontifyDirective {
    * Builds a srcset string for an original image, based on a sizes array.
    *
    * @param string $originalUrl
-   *  The original image url
+   *   The original image url.
    * @param array $sizes
-   *  A sizes array, same is in buildSizesString().
+   *   A sizes array, same is in buildSizesString().
    * @param array $defaultDimensions
-   *  The default dimensions (width and, optionally, height) of the image so
-   *  that we can compute the height of each of the image in the src set, by
-   *  preserving the aspect ratio.
+   *   The default dimensions (width and, optionally, height) of the image so
+   *   that we can compute the height of each of the image in the src set, by
+   *   preserving the aspect ratio.
    *
    * @return string
    */

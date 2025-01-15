@@ -81,6 +81,7 @@ class FrontifyAssetField extends FieldItemBase {
 
   /**
    * {@inheritdoc}
+   *
    * @throws \Drupal\Core\TypedData\Exception\MissingDataException
    */
   public function isEmpty(): bool {
@@ -88,10 +89,16 @@ class FrontifyAssetField extends FieldItemBase {
     return $value === NULL || $value === '';
   }
 
+  /**
+   *
+   */
   public function isExternal(): bool {
     return $this->getUrl()->isExternal();
   }
 
+  /**
+   *
+   */
   public function getUrl(): Url {
     return Url::fromUri($this->uri);
   }

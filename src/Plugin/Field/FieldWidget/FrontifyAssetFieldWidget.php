@@ -2,7 +2,6 @@
 
 namespace Drupal\frontify\Plugin\Field\FieldWidget;
 
-use Drupal;
 use Drupal\Core\Field\Attribute\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -59,7 +58,7 @@ class FrontifyAssetFieldWidget extends LinkWidget {
     array &$form,
     FormStateInterface $form_state
   ): array {
-    $config = Drupal::config('frontify.settings');
+    $config = \Drupal::config('frontify.settings');
     $item = $items[$delta];
 
     $element['frontify_preview'] = [

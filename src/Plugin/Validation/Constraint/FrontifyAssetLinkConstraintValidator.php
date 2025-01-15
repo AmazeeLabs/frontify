@@ -2,7 +2,6 @@
 
 namespace Drupal\frontify\Plugin\Validation\Constraint;
 
-use InvalidArgumentException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -22,7 +21,7 @@ class FrontifyAssetLinkConstraintValidator extends ConstraintValidator {
       try {
         $url = $link_item->getUrl();
       }
-      catch (InvalidArgumentException) {
+      catch (\InvalidArgumentException) {
         $uri_is_valid = FALSE;
       }
       if (!($uri_is_valid && $url->isExternal())) {

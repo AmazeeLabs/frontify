@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types = 1);
 
 namespace Drupal\frontify;
 
@@ -14,12 +16,18 @@ final class FrontifyApi {
 
   use StringTranslationTrait;
 
+  /**
+   *
+   */
   public function __construct(
     private readonly ClientInterface $httpClient,
     private readonly ConfigFactoryInterface $configFactory,
     private readonly MessengerInterface $messenger,
   ) {}
 
+  /**
+   *
+   */
   public function frontifyQuery(string $query): array {
     // Default is a readonly token for Frontify API. Safe to use in code.
     // If more capabilities are needed, a separate token should be created.
@@ -44,7 +52,7 @@ final class FrontifyApi {
           'query' => $query,
         ],
       ]);
-      $result = json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+      $result = json_decode((string) $response->getBody(), TRUE, 512, JSON_THROW_ON_ERROR);
     }
     catch (\Exception $e) {
       $this->messenger->addError('Error: @message', ['@message' => $e->getMessage()]);
@@ -77,7 +85,8 @@ final class FrontifyApi {
       if (!empty($queryResult['data']['asset']['customMetadata'])) {
         return $queryResult['data']['asset']['customMetadata'];
       }
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       $this->messenger->addError('Error: @message', ['@message' => $e->getMessage()]);
     }
 

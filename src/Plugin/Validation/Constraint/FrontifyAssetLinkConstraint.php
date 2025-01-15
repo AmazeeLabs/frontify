@@ -17,7 +17,7 @@ class FrontifyAssetLinkConstraint extends Constraint {
   /**
    * The message.
    *
-   * @var string $message
+   * @var string
    */
   public string $message = "The path ':uri' is invalid.";
 

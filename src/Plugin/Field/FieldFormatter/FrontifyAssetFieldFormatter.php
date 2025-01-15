@@ -3,7 +3,6 @@
 namespace Drupal\frontify\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Cache\Cache;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\Attribute\FieldFormatter;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -33,14 +32,14 @@ class FrontifyAssetFieldFormatter extends FormatterBase {
   /**
    * The current user.
    *
-   * @var AccountInterface
+   * @var \Drupal\Core\Session\AccountInterface
    */
   protected AccountInterface $currentUser;
 
   /**
    * The image style entity storage.
    *
-   * @var ImageStyleStorageInterface
+   * @var \Drupal\image\ImageStyleStorageInterface
    */
   protected ImageStyleStorageInterface $imageStyleStorage;
 
@@ -51,7 +50,7 @@ class FrontifyAssetFieldFormatter extends FormatterBase {
    *   The plugin_id for the formatter.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param FieldDefinitionInterface $field_definition
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
    *   The definition of the field to which the formatter is associated.
    * @param array $settings
    *   The formatter settings.
@@ -61,9 +60,9 @@ class FrontifyAssetFieldFormatter extends FormatterBase {
    *   The view mode.
    * @param array $third_party_settings
    *   Any third party settings.
-   * @param AccountInterface $current_user
+   * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
-   * @param EntityStorageInterface $image_style_storage
+   * @param \Drupal\Core\Entity\EntityStorageInterface $image_style_storage
    *   The image style storage.
    */
   public function __construct(
@@ -116,8 +115,8 @@ class FrontifyAssetFieldFormatter extends FormatterBase {
    */
   public static function defaultSettings(): array {
     return [
-        'image_style' => '',
-      ] + parent::defaultSettings();
+      'image_style' => '',
+    ] + parent::defaultSettings();
   }
 
   /**
@@ -136,8 +135,8 @@ class FrontifyAssetFieldFormatter extends FormatterBase {
       '#empty_option' => $this->t('None (original image)'),
       '#options' => $image_styles,
       '#description' => $description_link->toRenderable() + [
-          '#access' => $this->currentUser->hasPermission('administer image styles'),
-        ],
+        '#access' => $this->currentUser->hasPermission('administer image styles'),
+      ],
     ];
 
     return $element;

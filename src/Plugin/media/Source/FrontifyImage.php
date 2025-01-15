@@ -11,12 +11,12 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\frontify\Form\FrontifyMediaImageForm;
 use Drupal\media\Attribute\MediaSource;
 use Drupal\media\MediaInterface;
 use Drupal\media\MediaSourceBase;
 use Drupal\media\MediaSourceFieldConstraintsInterface;
 use Drupal\media\MediaTypeInterface;
-use Drupal\frontify\Form\FrontifyMediaImageForm;
 use GuzzleHttp\Exception\TransferException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -33,7 +33,7 @@ use Symfony\Component\Mime\MimeTypes;
   default_thumbnail_filename: "no-thumbnail.png",
   thumbnail_alt_metadata_attribute: "thumbnail_alt_value",
   forms: [
-    "media_library_add" => FrontifyMediaImageForm::class
+    "media_library_add" => FrontifyMediaImageForm::class,
   ],
 )]
 class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstraintsInterface {
@@ -90,16 +90,20 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
       // Name is already set in FrontifyMediaImageForm::createMediaFromValues().
       case 'thumbnail_width':
         return static::THUMBNAIL_WIDTH;
+
       case 'thumbnail_height':
         return static::THUMBNAIL_HEIGHT;
+
       case 'thumbnail_uri':
         $uri = $this->getLocalThumbnailUri(
           $url . '?width=' . static::THUMBNAIL_WIDTH . '&quality=' . static::THUMBNAIL_QUALITY
         ) ?: parent::getMetadata($media, 'thumbnail_uri');
         return $uri;
+
       case 'thumbnail_alt_value':
         // Name is fine for this use case.
         return $media->getName();
+
       default:
         return parent::getMetadata($media, $attribute_name);
     }
@@ -217,6 +221,5 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
     // we're stumped.
     return NULL;
   }
-
 
 }
