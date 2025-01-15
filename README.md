@@ -60,7 +60,8 @@ Drupal fields.
 ## Pre-populate fields
 
 Example code to pre-populate the `alt` and `author` field based on
-Frontify metadata.
+Frontify metadata. Only one of these hooks should be needed, depending
+on the context / use case.
 
 ### Media Library context with host entity
 
@@ -73,7 +74,6 @@ Frontify metadata.
  */
 function my_custom_frontify_media_create(EntityInterface $entity) {
   if (
-    $entity->getEntityTypeId() === 'media' &&
     $entity->bundle() === 'frontify_image' &&
     $entity->hasField('field_media_frontify_image') &&
     !$entity->get('field_media_frontify_image')->isEmpty()
@@ -109,7 +109,6 @@ host entities.
  */
 function my_custom_frontify_media_insert(EntityInterface $entity) {
   if (
-    $entity->getEntityTypeId() === 'media' &&
     $entity->bundle() === 'frontify_image' &&
     $entity->hasField('field_media_frontify_image') &&
     !$entity->get('field_media_frontify_image')->isEmpty()
