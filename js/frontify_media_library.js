@@ -7,7 +7,11 @@
   Drupal.frontifyMediaLibrary = {
     handleFinder(openFrontifyButton) {
       openFrontifyButton.addEventListener('click', async (button) => {
-        const $mediaLibraryWrapper = document.querySelector('.frontify-media-library-wrapper');
+        button.preventDefault();
+
+        const wrapperClass = drupalSettings.Frontify.wrapper_class || '.frontify-media-library-wrapper';
+
+        const $mediaLibraryWrapper = document.querySelector(wrapperClass);
         const $finderWrapper = $mediaLibraryWrapper.querySelector('.frontify-finder-wrapper');
 
         const $frontifyNameField = $mediaLibraryWrapper.querySelector('.js-form-item-name');
@@ -25,7 +29,9 @@
         // Drupal states are not working out, so we disable the add
         // button here until a selection is done in the finder.
         const $addToDrupalButton = $mediaLibraryWrapper.querySelector('.add-to-drupal');
-        $addToDrupalButton.disabled = true;
+        if ($addToDrupalButton) {
+          $addToDrupalButton.disabled = true;
+        }
 
         try {
           // Instantiate the Frontify finder.
@@ -94,11 +100,13 @@
 
             $frontifyNameField.style.display = 'block';
 
-            $addToDrupalButton.disabled = false;
             button.target.style.display = 'none';
             button.target.disabled = false;
             $finderWrapper.style.display = 'none';
             $finderWrapper.replaceChildren();
+            if ($addToDrupalButton) {
+              $addToDrupalButton.disabled = false;
+            }
           });
 
           // Add listener for user abortion.
@@ -109,11 +117,13 @@
 
             $frontifyNameField.style.display = 'none';
 
-            $addToDrupalButton.disabled = true;
             button.target.style.display = 'block';
             button.target.disabled = false;
             $finderWrapper.style.display = 'none';
             $finderWrapper.replaceChildren();
+            if ($addToDrupalButton) {
+              $addToDrupalButton.disabled = true;
+            }
           });
 
           $finderWrapper.style.display = 'flex';
@@ -124,9 +134,11 @@
           }
           // Re-enable the submit button and the input field.
           $frontifyNameField.style.display = 'block';
-          $addToDrupalButton.disabled = false;
           button.target.style.display = 'none';
           button.target.disabled = false;
+          if ($addToDrupalButton) {
+            $addToDrupalButton.disabled = false;
+          }
         }
       });
       // Trigger on initial load.

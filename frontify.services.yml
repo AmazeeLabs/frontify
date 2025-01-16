@@ -11,3 +11,7 @@ services:
     arguments: [ '@entity_type.manager', '@request_stack', '@views.executable', '@form_builder', '@media_library.opener_resolver' ]
     decorates: media_library.ui_builder
     decoration_priority: 1
+
+  frontify.fields.ui:
+    class: Drupal\frontify\FrontifyFieldsUi
+    arguments: ['@config.factory']
