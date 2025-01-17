@@ -429,7 +429,7 @@ class FrontifyMediaImageForm extends AddFormBase {
    *   The current form state.
    *
    * @return int
-   *   The number of media currently selected.
+   *   The amount of media currently selected.
    */
   private function getSelectedMediaItemCount(array $media_ids, FormStateInterface $form_state): int {
     $selected_count = count($media_ids);

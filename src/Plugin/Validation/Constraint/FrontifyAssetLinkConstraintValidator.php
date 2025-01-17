@@ -1,19 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\frontify\Plugin\Validation\Constraint;
 
+use Drupal\frontify\Plugin\Field\FieldType\FrontifyAssetField;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * Constraint validator for links receiving data allowed by its settings.
  */
-class FrontifyAssetLinkConstraintValidator extends ConstraintValidator {
+final class FrontifyAssetLinkConstraintValidator extends ConstraintValidator {
 
   /**
    * {@inheritdoc}
    */
-  public function validate($value, Constraint $constraint): void {
+  public function validate(mixed $value, Constraint $constraint): void {
+    if (!$constraint instanceof FrontifyAssetLinkConstraint) {
+      throw new UnexpectedTypeException($constraint, FrontifyAssetLinkConstraint::class);
+    }
+
+    if (!$value instanceof FrontifyAssetField) {
+      throw new \InvalidArgumentException(
+        sprintf('The validated value must be instance of \Drupal\frontify\Plugin\Field\FieldType\FrontifyAssetField, %s was given.', get_debug_type($item))
+      );
+    }
+
     if (isset($value)) {
       $uri_is_valid = TRUE;
       $link_item = $value;

@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\frontify\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Validation constraint for frontify asset links.
+ * Validation constraint for Frontify asset links.
  *
  * @Constraint(
  *   id = "FrontifyAssetLink",
- *   label = @Translation("Link data valid for frontifyAsset.", context="Validation"),
+ *   label = @Translation("Link data valid for Frontify asset.", context="Validation"),
  * )
  */
-class FrontifyAssetLinkConstraint extends Constraint {
+final class FrontifyAssetLinkConstraint extends Constraint {
 
   /**
    * The message.
