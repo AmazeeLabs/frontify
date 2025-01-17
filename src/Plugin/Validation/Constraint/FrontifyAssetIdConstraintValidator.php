@@ -90,8 +90,9 @@ final class FrontifyAssetIdConstraintValidator extends ConstraintValidator imple
 
     if (!empty($media_ids)) {
       // Unset the current media if we edit an existing one.
-      if (!$media->isNew() && array_key_exists($media->id(), $media_ids)) {
-        unset($media_ids[$media->id()]);
+      if (in_array($media->id(), $media_ids)) {
+        $key = array_search($media->id(), $media_ids);
+        unset($media_ids[$key]);
       }
 
       if (!empty($media_ids)) {
