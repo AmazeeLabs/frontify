@@ -161,9 +161,9 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
    */
   public function defaultConfiguration() {
     return parent::defaultConfiguration() + [
-        'deduplicate' => 1,
-        'disable_global_add' => 1,
-      ];
+      'deduplicate' => 1,
+      'disable_global_add' => 1,
+    ];
   }
 
   /**

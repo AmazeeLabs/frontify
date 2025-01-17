@@ -26,7 +26,6 @@ final class MediaTypeRouteSubscriber extends RouteSubscriberBase {
     // Prevents to use /media/add/[media_type] if it's disabled
     // on the media type source configuration.
     // Propagates to the admin menu Content > Media > Add media > [media_type].
-
     // We don't want to remove the permission to add media types but just
     // prevent to add globally and still allow media to be added
     // from host entities.
