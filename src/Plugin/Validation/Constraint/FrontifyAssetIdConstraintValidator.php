@@ -57,6 +57,15 @@ final class FrontifyAssetIdConstraintValidator extends ConstraintValidator imple
       return;
     }
 
+    // Do not trigger this constraint validation in the Media Library UI
+    // context, as we are using the Frontify Finder there, that already
+    // have its own deduplication handler.
+    // Also, this would prevent it to get through the initial import
+    // if deduplication is enabled.
+    if (\Drupal::routeMatch()->getRouteName() === 'media_library.ui') {
+      return;
+    }
+
     /** @var \Drupal\media\MediaTypeInterface $media_type */
     $media_type = $this->entityTypeManager
       ->getStorage('media_type')->load($media->bundle());
