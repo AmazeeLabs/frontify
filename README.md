@@ -9,6 +9,7 @@ Difference with v2 and v3:
 - Generates a thumbnail for the Media entity on Media creation
 - When inserting with the Media Library, optionally deduplicate media entities per media type
 - Validation constraint to prevent to add multiple times in the global media library if deduplicate is enabled
+- Optionally disable the possibility to add media entities in the global media library, per media type
 - Isolates mime type groups for Frontify assets, just as Drupal does (Frontify Image, Frontify Document, Frontify Video)
 - Moves the `alt text` field in a generic json field with other metadata, so it's not specific to images
 and the field type can be used for Video, Documents, ...
@@ -129,14 +130,11 @@ function my_custom_frontify_media_insert(EntityInterface $entity) {
 
 # Roadmap for contribution
 
-- Create other media types than Image (Video, Document)
-- As creating references might be the preferred way
-deny access by default to add through the global Media library
-or at least add a validation constraint based on the id to prevent duplicates
+- Create other media types providers than Image (Video, Document)
+- Configure mime type groups on the media provider
 - Config install and schema
 - Upgrade path for the new field type schema
 - Adjust the default field widget and field formatter accordingly
-- Configure mime type groups on the media provider
 - Isolate Gutenberg specifics in a submodule
 - Isolate GraphQL specifics in a submodule
 - Tests
