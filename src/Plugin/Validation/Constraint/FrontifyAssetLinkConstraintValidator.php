@@ -24,7 +24,7 @@ final class FrontifyAssetLinkConstraintValidator extends ConstraintValidator {
 
     if (!$value instanceof FrontifyAssetField) {
       throw new \InvalidArgumentException(
-        sprintf('The validated value must be instance of \Drupal\frontify\Plugin\Field\FieldType\FrontifyAssetField, %s was given.', get_debug_type($item))
+        sprintf('The validated value must be instance of \Drupal\frontify\Plugin\Field\FieldType\FrontifyAssetField, %s was given.', get_debug_type($value))
       );
     }
 

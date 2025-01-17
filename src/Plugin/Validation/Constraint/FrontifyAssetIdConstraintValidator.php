@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\frontify\Plugin\Validation\Constraint;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Url;
 use Drupal\frontify\Plugin\Field\FieldType\FrontifyAssetField;
 use Drupal\media\MediaInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -20,7 +18,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  *
  * Media entities from the same media type should have unique Frontify id.
  *
- * Applies only when the deduplicate setting is enabled.
+ * Applies only when the deduplicate configuration is enabled in the media type.
  */
 final class FrontifyAssetIdConstraintValidator extends ConstraintValidator implements ContainerInjectionInterface {
 
@@ -29,7 +27,6 @@ final class FrontifyAssetIdConstraintValidator extends ConstraintValidator imple
    */
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
-    private readonly ConfigFactoryInterface $configFactory,
   ) {}
 
   /**
@@ -38,7 +35,6 @@ final class FrontifyAssetIdConstraintValidator extends ConstraintValidator imple
   public static function create(ContainerInterface $container): self {
     return new self(
       $container->get('entity_type.manager'),
-      $container->get('config.factory'),
     );
   }
 
@@ -52,14 +48,8 @@ final class FrontifyAssetIdConstraintValidator extends ConstraintValidator imple
 
     if (!$value instanceof FrontifyAssetField) {
       throw new \InvalidArgumentException(
-        sprintf('The validated value must be instance of \Drupal\frontify\Plugin\Field\FieldType\FrontifyAssetField, %s was given.', get_debug_type($item))
+        sprintf('The validated value must be instance of \Drupal\frontify\Plugin\Field\FieldType\FrontifyAssetField, %s was given.', get_debug_type($value))
       );
-    }
-
-    $config = $this->configFactory->get('frontify.settings');
-    $deduplicate = $config->get('media_deduplicate') === 1;
-    if (!$deduplicate) {
-      return;
     }
 
     $media = $value->getEntity();
@@ -67,8 +57,17 @@ final class FrontifyAssetIdConstraintValidator extends ConstraintValidator imple
       return;
     }
 
+    /** @var \Drupal\media\MediaTypeInterface $media_type */
     $media_type = $this->entityTypeManager
       ->getStorage('media_type')->load($media->bundle());
+
+    $media_type_configuration = $media_type->getSource()->getConfiguration();
+    $deduplicate = !empty($media_type_configuration['deduplicate']) &&
+      $media_type_configuration['deduplicate'] === 1;
+    if (!$deduplicate) {
+      return;
+    }
+
     $source_field_name = $media_type
       ->getSource()->getSourceFieldDefinition($media_type)->getName();
     $media_storage = $this->entityTypeManager->getStorage('media');
@@ -93,7 +92,6 @@ final class FrontifyAssetIdConstraintValidator extends ConstraintValidator imple
         $this->context->addViolation($constraint->message, [
           '@id' => $value->id,
           ':duplicate_media_url' => $media_url,
-          ':frontify_settings_url' => Url::fromRoute('frontify.settings')->toString(),
         ]);
       }
     }

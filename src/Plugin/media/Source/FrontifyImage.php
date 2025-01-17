@@ -8,6 +8,7 @@ use Drupal\Core\Field\FieldConfigInterface;
 use Drupal\Core\File\Exception\FileException;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -121,6 +122,48 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
    */
   public function createSourceField(MediaTypeInterface $type): FieldConfigInterface|EntityInterface {
     return parent::createSourceField($type)->set('label', 'Frontify Image');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
+
+    $form['deduplicate'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Deduplicate'),
+      '#default_value' => $this->configuration['deduplicate'],
+      '#description' => $this->t('When inserting a Media reference in host entities, do not import from Frontify and use the existing Media if it already exists. Also validate the uniqueness of the Frontify ID per media type when adding via the global media library.'),
+    ];
+
+    $form['disable_global_add'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Prevent to add globally'),
+      '#default_value' => $this->configuration['disable_global_add'],
+      '#description' => $this->t('Disable the global "Add" feature (example: /media/add/frontify_image). When using a DAM, it make sense to only add a reference via host entities and not create them globally. This is especially the case since we replace the Media Library with the Frontify Finder.'),
+    ];
+
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
+    $configuration = $this->getConfiguration();
+    $this->setConfiguration($configuration);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return parent::defaultConfiguration() + [
+        'deduplicate' => 1,
+        'disable_global_add' => 1,
+      ];
   }
 
   /**

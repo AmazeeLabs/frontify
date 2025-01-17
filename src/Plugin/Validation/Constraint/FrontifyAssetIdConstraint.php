@@ -27,6 +27,6 @@ use Symfony\Component\Validator\Constraint;
  */
 final class FrontifyAssetIdConstraint extends Constraint {
 
-  public string $message = 'The Frontify id <em>@id</em> is already used by <a href=":duplicate_media_url" target="_blank">this Media entity</a>, it should be unique or you need to allow duplicates in <a href=":frontify_settings_url" target="_blank">Frontify settings</a>.';
+  public string $message = 'The Frontify id <em>@id</em> is already used by <a href=":duplicate_media_url" target="_blank">this Media entity</a>, it should be unique, or you need to allow duplicates in the media type configuration.';
 
 }

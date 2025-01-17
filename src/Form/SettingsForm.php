@@ -43,18 +43,6 @@ class SettingsForm extends ConfigFormBase {
       '#description' => $this->t('Only needed when interacting with the GraphQL API https://developer.frontify.com/document/2570#/introduction/graphql-api'),
     ];
 
-    $form['media'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Media'),
-      '#open' => TRUE,
-    ];
-    $form['media']['deduplicate'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Deduplicate'),
-      '#default_value' => $config->get('media_deduplicate') ?? TRUE,
-      '#description' => $this->t('When inserting a Media reference with host entities, do not import from Frontify and use the existing Media if it already exists. Also validate the uniqueness of the Frontify ID per media type when adding via the global media library.'),
-    ];
-
     $form['debug_settings'] = [
       '#type' => 'details',
       '#title' => $this->t('Debug'),
@@ -78,7 +66,6 @@ class SettingsForm extends ConfigFormBase {
     $config = $this->config('frontify.settings');
     $config->set('frontify_api_url', $form_state->getValue('url'));
     $config->set('frontify_api_token', $form_state->getValue('token'));
-    $config->set('media_deduplicate', $form_state->getValue('deduplicate'));
     $config->set('debug_mode', $form_state->getValue('debug_mode'));
 
     $config->save();
