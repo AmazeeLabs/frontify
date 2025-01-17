@@ -52,7 +52,7 @@ class SettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Deduplicate'),
       '#default_value' => $config->get('media_deduplicate') ?? TRUE,
-      '#description' => $this->t('When inserting a Media reference, do not import it from Frontify and use the existing Media. It will still be possible to add multiple instances in <em>/admin/content/media</em>'),
+      '#description' => $this->t('When inserting a Media reference with host entities, do not import from Frontify and use the existing Media if it already exists. Also validate the uniqueness of the Frontify ID per media type when adding via the global media library.'),
     ];
 
     $form['debug_settings'] = [
