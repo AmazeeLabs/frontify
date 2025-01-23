@@ -1,6 +1,6 @@
 /**
  * @file
- * Provides the base functionality to handle Frontify Finder's drupal integration.
+ * Provides functionality to handle Frontify Finder's drupal integration.
  */
 
 (function () {
@@ -9,26 +9,44 @@
       openFrontifyButton.addEventListener('click', async (button) => {
         button.preventDefault();
 
+        // Get the wrapper class from the settings or use the default.
         const wrapperClass = drupalSettings.Frontify.wrapper_class || '.frontify-media-library-wrapper';
+        const selectAddButtonClass = drupalSettings.Frontify.select_add_button_class || '.add-to-drupal';
+        const enableImagePreview = drupalSettings.Frontify.enable_image_preview;
+        const hideOpenButton = drupalSettings.Frontify.hide_open_button;
 
+        // Start looking for the elements.
         const $mediaLibraryWrapper = document.querySelector(wrapperClass);
         const $finderWrapper = $mediaLibraryWrapper.querySelector('.frontify-finder-wrapper');
 
+        // Get the form fields.
         const $frontifyNameField = $mediaLibraryWrapper.querySelector('.js-form-item-name');
         const $frontifyUriField = $mediaLibraryWrapper.querySelector('.js-form-item-uri');
         const $frontifyIdField = $mediaLibraryWrapper.querySelector('.js-form-item-id');
         const $frontifyMetadataField = $mediaLibraryWrapper.querySelector('.js-form-item-metadata');
+        const $fontifyImagePreivew = $mediaLibraryWrapper.querySelector('.frontify-image-preview');
+
+        // Look for an optional field to auto-select the entity browser widget.
+        let $frontifyAutoSelect = null;
+        if (drupalSettings.Frontify.trigger_element) {
+          $frontifyAutoSelect = $mediaLibraryWrapper.querySelector(drupalSettings.Frontify.trigger_element);
+        }
 
         // Hide and disable the opener button unless the finder is closed.
-        button.currentTarget.style.display = 'none';
+        if (hideOpenButton) {
+          button.currentTarget.style.display = 'none';
+        }
         button.currentTarget.disabled = true;
 
         // Hide the name field until it's filled.
         $frontifyNameField.style.display = 'none';
+        $fontifyImagePreivew.style.display = 'none';
+
+        $mediaLibraryWrapper.classList.add('open');
 
         // Drupal states are not working out, so we disable the add
         // button here until a selection is done in the finder.
-        const $addToDrupalButton = $mediaLibraryWrapper.querySelector('.add-to-drupal');
+        const $addToDrupalButton = $mediaLibraryWrapper.querySelector(selectAddButtonClass);
         if ($addToDrupalButton) {
           $addToDrupalButton.disabled = true;
         }
@@ -81,7 +99,6 @@
           const $mediaLibraryButtons = document.querySelectorAll('.ui-dialog-buttonset button');
           if ($mediaLibraryButtons) {
             $mediaLibraryButtons.forEach((button) => {
-              console.log('Button', button);
               if (button.textContent === 'Insert') {
                 button.style.display = 'none';
               }
@@ -98,14 +115,33 @@
             $frontifyNameField.querySelector('input').value = assets[0].title;
             $frontifyMetadataField.querySelector('textarea').value = JSON.stringify(assets[0]);
 
-            $frontifyNameField.style.display = 'block';
+            if (enableImagePreview) {
+              const image = document.createElement('img');
+              image.src = assets[0].previewUrl;
+              image.width = 200;
+              const label = document.createElement('label');
+              label.textContent = Drupal.t('Image Preview');
+              label.classList.add('form-item__label');
+              $fontifyImagePreivew.replaceChildren(label, image);
+            }
+            $fontifyImagePreivew.style.display = 'block';
 
-            button.target.style.display = 'none';
+            $frontifyNameField.style.display = 'block';
+            if (hideOpenButton) {
+              button.target.style.display = 'none';
+            }
             button.target.disabled = false;
             $finderWrapper.style.display = 'none';
             $finderWrapper.replaceChildren();
+            $mediaLibraryWrapper.classList.remove('open');
             if ($addToDrupalButton) {
               $addToDrupalButton.disabled = false;
+            }
+
+            // Trigger an event to auto-select the entity browser widget.
+            if ($frontifyAutoSelect && drupalSettings.Frontify.trigger_event) {
+              const event = new Event(drupalSettings.Frontify.trigger_event);
+              $frontifyAutoSelect.dispatchEvent(event);
             }
           });
 
@@ -117,10 +153,14 @@
 
             $frontifyNameField.style.display = 'none';
 
-            button.target.style.display = 'block';
+            if (hideOpenButton) {
+              button.target.style.display = 'block';
+            }
             button.target.disabled = false;
+            $fontifyImagePreivew.style.display = 'none';
             $finderWrapper.style.display = 'none';
             $finderWrapper.replaceChildren();
+            $mediaLibraryWrapper.classList.remove('open');
             if ($addToDrupalButton) {
               $addToDrupalButton.disabled = true;
             }
@@ -134,7 +174,10 @@
           }
           // Re-enable the submit button and the input field.
           $frontifyNameField.style.display = 'block';
-          button.target.style.display = 'none';
+          $fontifyImagePreivew.style.display = 'none';
+          if (hideOpenButton) {
+            button.target.style.display = 'none';
+          }
           button.target.disabled = false;
           if ($addToDrupalButton) {
             $addToDrupalButton.disabled = false;

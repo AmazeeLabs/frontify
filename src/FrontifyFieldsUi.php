@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\frontify;
 
@@ -16,6 +16,7 @@ use Psr\Http\Client\ClientInterface;
  * You can change one thing here and have it reflected across the entire UI.
  */
 final class FrontifyFieldsUi {
+
   use StringTranslationTrait;
 
   /**
@@ -25,7 +26,14 @@ final class FrontifyFieldsUi {
     private readonly ConfigFactoryInterface $configFactory,
   ) {}
 
-  public function mediaLibraryUi(string $frontify_wrapper_class = null, string $frontify_conext = 'media_library'): array {
+  public function mediaLibraryUi(
+    string $frontify_wrapper_class = NULL,
+    string $trigger_element = NULL,
+    string $trigger_event = NULL,
+    string $select_add_button_class = NULL,
+    bool $hide_open_button = TRUE,
+    bool $enable_image_preview = FALSE,
+    string $frontify_conext = 'media_library'): array {
     $fields = [];
 
     $config = \Drupal::config('frontify.settings');
@@ -67,6 +75,8 @@ final class FrontifyFieldsUi {
             [
               'api_url' => $frontifyApiUrl,
               'debug_mode' => $frontifyDebugMode === 1,
+              'hide_open_button' => $hide_open_button,
+              'enable_image_preview' => $enable_image_preview,
             ],
         ],
       ],
@@ -79,6 +89,18 @@ final class FrontifyFieldsUi {
 
     if ($frontify_conext) {
       $fields['container']['open']['#attached']['drupalSettings']['Frontify']['context'] = $frontify_conext;
+    }
+
+    if ($trigger_element) {
+      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['trigger_element'] = $trigger_element;
+    }
+
+    if ($trigger_event) {
+      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['trigger_event'] = $trigger_event;
+    }
+
+    if ($select_add_button_class) {
+      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['select_add_button_class'] = $select_add_button_class;
     }
 
     $fields['container']['frontify_finder_wrapper'] = [
@@ -96,6 +118,10 @@ final class FrontifyFieldsUi {
       '#attributes' => [
         'class' => ['frontify-name'],
       ],
+    ];
+    $fields['container']['image_preview_wrapper']['image_preview'] = [
+      '#type' => 'markup',
+      '#markup' => '<div class="frontify-image-preview"></div>',
     ];
     $fields['container']['frontify_fields'] = [
       '#title' => $this->t('Frontify fields'),
@@ -137,4 +163,5 @@ final class FrontifyFieldsUi {
 
     return $fields;
   }
+
 }
