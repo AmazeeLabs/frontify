@@ -191,8 +191,10 @@ class FrontifyMediaImageForm extends AddFormBase {
     $source_field_name,
     FormStateInterface $form_state
   ) {
-    $config = \Drupal::config('frontify.settings');
-    $deduplicate = $config->get('media_deduplicate') === 1;
+    $media_type_configuration = $media_type->getSource()->getConfiguration();
+    $deduplicate = !empty($media_type_configuration['deduplicate']) &&
+      $media_type_configuration['deduplicate'] === 1;
+
     if ($deduplicate) {
       // Check first if the Media exists, and if so, return it, so
       // we don't end up creating duplicates.
@@ -340,7 +342,7 @@ class FrontifyMediaImageForm extends AddFormBase {
    *   The current form state.
    *
    * @return int
-   *   The number of media currently selected.
+   *   The amount of media currently selected.
    */
   private function getSelectedMediaItemCount(array $media_ids, FormStateInterface $form_state): int {
     $selected_count = count($media_ids);

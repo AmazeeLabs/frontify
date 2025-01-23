@@ -1,12 +1,3 @@
-frontify.admin_config_frontify:
-  path: '/admin/config/frontify'
-  defaults:
-    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
-    _title: 'Frontify'
-    _description: 'Manage settings for Frontify Platform.'
-  requirements:
-    _permission: 'administer frontify'
-
 frontify.settings:
   path: '/admin/config/frontify/settings'
   defaults:

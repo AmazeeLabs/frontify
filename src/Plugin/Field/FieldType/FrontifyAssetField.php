@@ -19,7 +19,7 @@ use Drupal\Core\Url;
   category: "general",
   default_widget: "frontify_asset_field_widget",
   default_formatter: "frontify_asset_field_formatter",
-  constraints: ["FrontifyAssetLink" => []],
+  constraints: ["FrontifyAssetLink" => [], "FrontifyAssetId" => []],
 )]
 class FrontifyAssetField extends FieldItemBase {
 

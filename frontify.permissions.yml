@@ -1,4 +1,4 @@
 administer frontify:
-  title: 'administer frontify'
-  description: 'Administer Frontify'
+  title: 'Administer frontify'
+  description: 'Administer Frontify settings.'
   restrict access: TRUE

@@ -7,7 +7,9 @@ Difference with v2 and v3:
 
 - Substitutes the Media Library with the Frontify Finder
 - Generates a thumbnail for the Media entity on Media creation
-- When inserting with the Media Library, optionally deduplicate media entities
+- When inserting with the Media Library, optionally deduplicate media entities per media type
+- Validation constraint to prevent to add multiple times in the global media library if deduplicate is enabled
+- Optionally disable the possibility to add media entities in the global media library, per media type
 - Isolates mime type groups for Frontify assets, just as Drupal does (Frontify Image, Frontify Document, Frontify Video)
 - Moves the `alt text` field in a generic json field with other metadata, so it's not specific to images
 and the field type can be used for Video, Documents, ...
@@ -15,7 +17,7 @@ and the field type can be used for Video, Documents, ...
 - Adds the Frontify ID in the custom Frontify asset field so it can be used by other processes to interact with the Frontify API
 - Adds an optional PHP GraphQL API wrapper for the Frontify API
 - Integrates with Gutenberg Media library
-- Integrates with GraphQL v4 directives for responsive images
+- Integrates with [GraphQL v4 directives](https://packagist.org/packages/amazeelabs/graphql_directives) for responsive images
 
 ### Use case for mime type groups
 
@@ -128,14 +130,11 @@ function my_custom_frontify_media_insert(EntityInterface $entity) {
 
 # Roadmap for contribution
 
-- Create other media types than Image (Video, Document)
-- As creating references might be the preferred way
-deny access by default to add through the global Media library
-or at least add a validation constraint based on the id to prevent duplicates
+- Create other media types providers than Image (Video, Document)
+- Configure mime type groups on the media provider
 - Config install and schema
 - Upgrade path for the new field type schema
 - Adjust the default field widget and field formatter accordingly
-- Configure mime type groups on the media provider
 - Isolate Gutenberg specifics in a submodule
 - Isolate GraphQL specifics in a submodule
 - Tests
