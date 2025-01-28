@@ -47,10 +47,10 @@ class FrontifyFinder extends WidgetBase {
   public function getForm(array &$original_form, FormStateInterface $form_state, array $additional_widget_parameters) {
     $form = parent::getForm($original_form, $form_state, $additional_widget_parameters);
 
-    /** @var \Drupal\frontify\FrontifyFieldsUi $fontifyFieldUiService */
-    $fontifyFieldUiService = \Drupal::service('frontify.fields.ui');
+    /** @var \Drupal\frontify\FrontifyFieldsUi $frontifyFieldUiService */
+    $frontifyFieldUiService = \Drupal::service('frontify.fields.ui');
 
-    $fields = $fontifyFieldUiService->mediaLibraryUi(
+    $fields = $frontifyFieldUiService->mediaLibraryUi(
       '.entity-browser-form',
       '[id="auto_select_handler"]',
       'auto_select_entity_browser_widget',

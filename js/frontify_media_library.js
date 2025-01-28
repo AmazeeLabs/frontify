@@ -24,7 +24,7 @@
         const $frontifyUriField = $mediaLibraryWrapper.querySelector('.js-form-item-uri');
         const $frontifyIdField = $mediaLibraryWrapper.querySelector('.js-form-item-id');
         const $frontifyMetadataField = $mediaLibraryWrapper.querySelector('.js-form-item-metadata');
-        const $fontifyImagePreivew = $mediaLibraryWrapper.querySelector('.frontify-image-preview');
+        const $frontifyImagePreivew = $mediaLibraryWrapper.querySelector('.frontify-image-preview');
 
         // Look for an optional field to auto-select the entity browser widget.
         let $frontifyAutoSelect = null;
@@ -40,7 +40,7 @@
 
         // Hide the name field until it's filled.
         $frontifyNameField.style.display = 'none';
-        $fontifyImagePreivew.style.display = 'none';
+        $frontifyImagePreivew.style.display = 'none';
 
         $mediaLibraryWrapper.classList.add('open');
 
@@ -122,9 +122,9 @@
               const label = document.createElement('label');
               label.textContent = Drupal.t('Image Preview');
               label.classList.add('form-item__label');
-              $fontifyImagePreivew.replaceChildren(label, image);
+              $frontifyImagePreivew.replaceChildren(label, image);
             }
-            $fontifyImagePreivew.style.display = 'block';
+            $frontifyImagePreivew.style.display = 'block';
 
             $frontifyNameField.style.display = 'block';
             if (hideOpenButton) {
@@ -157,7 +157,7 @@
               button.target.style.display = 'block';
             }
             button.target.disabled = false;
-            $fontifyImagePreivew.style.display = 'none';
+            $frontifyImagePreivew.style.display = 'none';
             $finderWrapper.style.display = 'none';
             $finderWrapper.replaceChildren();
             $mediaLibraryWrapper.classList.remove('open');
@@ -174,7 +174,7 @@
           }
           // Re-enable the submit button and the input field.
           $frontifyNameField.style.display = 'block';
-          $fontifyImagePreivew.style.display = 'none';
+          $frontifyImagePreivew.style.display = 'none';
           if (hideOpenButton) {
             button.target.style.display = 'none';
           }

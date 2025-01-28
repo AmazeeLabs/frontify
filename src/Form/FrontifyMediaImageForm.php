@@ -120,10 +120,10 @@ class FrontifyMediaImageForm extends AddFormBase {
    * {@inheritdoc}
    */
   protected function buildInputElement(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\frontify\FrontifyFieldsUi $fontifyFieldUiService */
-    $fontifyFieldUiService = \Drupal::service('frontify.fields.ui');
+    /** @var \Drupal\frontify\FrontifyFieldsUi $frontifyFieldUiService */
+    $frontifyFieldUiService = \Drupal::service('frontify.fields.ui');
 
-    $fields = $fontifyFieldUiService->mediaLibraryUi();
+    $fields = $frontifyFieldUiService->mediaLibraryUi();
 
     if (isset($fields['message'])) {
       return $fields;
