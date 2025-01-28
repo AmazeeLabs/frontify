@@ -1,0 +1,7 @@
+entity_browser.browser.widget.frontify_finder:
+  type: mapping
+  label: 'Frontify Finder widget configuration'
+  mapping:
+    submit_text:
+      type: text
+      label: 'Submit button text'

@@ -6,7 +6,6 @@
 (function () {
   Drupal.frontifyMediaForm = {
     handleFinder(el) {
-      console.log('Frontify media form');
       el.addEventListener('click', async element => {
         element.currentTarget.disabled = true;
         // Handle unlimited fields.

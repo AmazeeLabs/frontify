@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\frontify\FrontifyUiConfig;
 use Drupal\media\MediaInterface;
 use Drupal\media\MediaTypeInterface;
 use Drupal\media_library\Ajax\UpdateSelectionCommand;
@@ -120,105 +121,18 @@ class FrontifyMediaImageForm extends AddFormBase {
    * {@inheritdoc}
    */
   protected function buildInputElement(array $form, FormStateInterface $form_state) {
-    $config = \Drupal::config('frontify.settings');
-    $frontifyApiUrl = $config->get('frontify_api_url');
-    $frontifyDebugMode = $config->get('debug_mode');
+    /** @var \Drupal\frontify\FrontifyFieldsUi $frontifyFieldUiService */
+    $frontifyFieldUiService = \Drupal::service('frontify.fields.ui');
 
-    if (empty($frontifyApiUrl)) {
-      $form['message'] = [
-        '#theme' => 'status_messages',
-        '#message_list' => [
-          'error' => [$this->t('Frontify API URL is not set. Please configure it in the Frontify settings.')],
-        ],
-      ];
-      return $form;
+    // Configuration for Frontify UI.
+    $frontifyUiConfig = new FrontifyUiConfig();
+    $fields = $frontifyFieldUiService->getFieldsUi($frontifyUiConfig);
+
+    if (isset($fields['message'])) {
+      return $fields;
     }
 
-    // Add a container to group the input elements for styling purposes.
-    $form['container'] = [
-      '#type' => 'container',
-      '#attributes' => [
-        'class' => ['frontify-media-library-wrapper'],
-      ],
-    ];
-
-    $form['container']['open'] = [
-      '#type' => 'button',
-      '#value' => $this->t('Open Frontify'),
-      '#attributes' => [
-        'class' => ['frontify-finder-open-button', 'btn', 'btn-primary'],
-        'id' => ['frontify-finder-open-button'],
-      ],
-      '#attached' => [
-        'library' => [
-          'frontify/frontify_once',
-          'frontify/frontify_media_library',
-        ],
-        'drupalSettings' => [
-          'Frontify' =>
-            [
-              'context' => 'media_library',
-              'api_url' => $frontifyApiUrl,
-              'debug_mode' => $frontifyDebugMode === 1,
-            ],
-        ],
-      ],
-      '#limit_validation_errors' => [],
-    ];
-
-    $form['container']['frontify_finder_wrapper'] = [
-      '#type' => 'container',
-      '#attributes' => [
-        'class' => ['frontify-finder-wrapper'],
-      ],
-    ];
-
-    $form['container']['name_wrapper']['name'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Frontify image name'),
-      '#maxlength' => 255,
-      '#required' => TRUE,
-      '#attributes' => [
-        'class' => ['frontify-name'],
-      ],
-    ];
-    $form['container']['frontify_fields'] = [
-      '#title' => $this->t('Frontify fields'),
-      '#type' => 'details',
-      '#open' => FALSE,
-      '#attributes' => [
-        'class' => [
-          'frontify-fields',
-          $frontifyDebugMode !== 1 ? 'visually-hidden' : '',
-        ],
-      ],
-    ];
-    $form['container']['frontify_fields']['id'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Frontify image id'),
-      '#maxlength' => 255,
-      '#required' => TRUE,
-      '#attributes' => [
-        'class' => ['frontify-id'],
-      ],
-    ];
-    $form['container']['frontify_fields']['uri'] = [
-      '#type' => 'url',
-      '#title' => $this->t('Frontify image URL'),
-      '#maxlength' => 2048,
-      '#required' => TRUE,
-      '#attributes' => [
-        'class' => ['frontify-image-uri'],
-      ],
-    ];
-    $form['container']['frontify_fields']['metadata'] = [
-      '#type' => 'textarea',
-      '#title' => $this->t('Frontify image metadata'),
-      '#required' => TRUE,
-      '#attributes' => [
-        'class' => ['frontify-image-metadata'],
-      ],
-    ];
+    $form = array_merge($form, $fields);
 
     $form['container']['submit'] = [
       '#type' => 'submit',

@@ -12,6 +12,10 @@ services:
     decorates: media_library.ui_builder
     decoration_priority: 1
 
+  frontify.fields.ui:
+    class: Drupal\frontify\FrontifyFieldsUi
+    arguments: ['@config.factory']
+
   frontify.route_subscriber:
     class: Drupal\frontify\EventSubscriber\MediaTypeRouteSubscriber
     tags:
