@@ -1,6 +1,6 @@
 name: 'Frontify Entity Browser'
 type: module
-description: 'Integration Frontify Finder with Entity Browser.'
+description: 'Integrates Frontify Finder with Entity Browser.'
 package: Frontify
 core_version_requirement: ^10 || ^11
 dependencies:
