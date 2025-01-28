@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\frontify\FrontifyUiConfig;
 use Drupal\media\MediaInterface;
 use Drupal\media\MediaTypeInterface;
 use Drupal\media_library\Ajax\UpdateSelectionCommand;
@@ -123,7 +124,9 @@ class FrontifyMediaImageForm extends AddFormBase {
     /** @var \Drupal\frontify\FrontifyFieldsUi $frontifyFieldUiService */
     $frontifyFieldUiService = \Drupal::service('frontify.fields.ui');
 
-    $fields = $frontifyFieldUiService->mediaLibraryUi();
+    // Configuration for Frontify UI.
+    $frontifyUiConfig = new FrontifyUiConfig();
+    $fields = $frontifyFieldUiService->getFieldsUi($frontifyUiConfig);
 
     if (isset($fields['message'])) {
       return $fields;

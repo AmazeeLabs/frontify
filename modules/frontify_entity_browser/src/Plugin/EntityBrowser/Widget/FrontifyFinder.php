@@ -3,12 +3,12 @@
 namespace Drupal\frontify_entity_browser\Plugin\EntityBrowser\Widget;
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\entity_browser\Events\EntitySelectionEvent;
 use Drupal\entity_browser\Events\Events;
 use Drupal\entity_browser\WidgetBase;
+use Drupal\frontify\FrontifyUiConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -50,13 +50,16 @@ class FrontifyFinder extends WidgetBase {
     /** @var \Drupal\frontify\FrontifyFieldsUi $frontifyFieldUiService */
     $frontifyFieldUiService = \Drupal::service('frontify.fields.ui');
 
-    $fields = $frontifyFieldUiService->mediaLibraryUi(
-      '.entity-browser-form',
-      '[id="auto_select_handler"]',
-      'auto_select_entity_browser_widget',
-      '[id="edit-submit"]',
-      FALSE,
-      TRUE);
+    // Configuration for Frontify UI.
+    $frontifyUiConfig = new FrontifyUiConfig();
+    $frontifyUiConfig->frontify_wrapper_class = '.entity-browser-form';
+    $frontifyUiConfig->trigger_element = '[id="frontify-finder-open-button"]';
+    $frontifyUiConfig->trigger_event = 'auto_select_entity_browser_widget';
+    $frontifyUiConfig->select_add_button_class = '[id="edit-submit"]';
+    $frontifyUiConfig->hide_open_button = FALSE;
+    $frontifyUiConfig->enable_image_preview = TRUE;
+
+    $fields = $frontifyFieldUiService->getFieldsUi($frontifyUiConfig);
 
     if (isset($fields['message'])) {
       return $fields;

@@ -12,6 +12,20 @@ use Drupal\Core\Url;
 use Psr\Http\Client\ClientInterface;
 
 /**
+ * Configuration class for FrontifyFieldsUi.
+ * If nothing is set then the default values will be used.
+ */
+final class FrontifyUiConfig {
+  public ?string $frontify_wrapper_class = NULL;
+  public ?string $trigger_element = NULL;
+  public ?string $trigger_event = NULL;
+  public ?string $select_add_button_class = NULL;
+  public bool $hide_open_button = TRUE;
+  public bool $enable_image_preview = FALSE;
+  public string $frontify_context = 'media_library';
+}
+
+/**
  * Builds the Frontify UI fields.
  * You can change one thing here and have it reflected across the entire UI.
  */
@@ -26,19 +40,12 @@ final class FrontifyFieldsUi {
     private readonly ConfigFactoryInterface $configFactory,
   ) {}
 
-  public function mediaLibraryUi(
-    string $frontify_wrapper_class = NULL,
-    string $trigger_element = NULL,
-    string $trigger_event = NULL,
-    string $select_add_button_class = NULL,
-    bool $hide_open_button = TRUE,
-    bool $enable_image_preview = FALSE,
-    string $frontify_conext = 'media_library'): array {
+  public function getFieldsUi(FrontifyUiConfig $config): array {
     $fields = [];
 
-    $config = \Drupal::config('frontify.settings');
-    $frontifyApiUrl = $config->get('frontify_api_url');
-    $frontifyDebugMode = $config->get('debug_mode');
+    $drupalConfig = \Drupal::config('frontify.settings');
+    $frontifyApiUrl = $drupalConfig->get('frontify_api_url');
+    $frontifyDebugMode = $drupalConfig->get('debug_mode');
 
     if (empty($frontifyApiUrl)) {
       $fields['message'] = [
@@ -75,32 +82,32 @@ final class FrontifyFieldsUi {
             [
               'api_url' => $frontifyApiUrl,
               'debug_mode' => $frontifyDebugMode === 1,
-              'hide_open_button' => $hide_open_button,
-              'enable_image_preview' => $enable_image_preview,
+              'hide_open_button' => $config->hide_open_button,
+              'enable_image_preview' => $config->enable_image_preview,
             ],
         ],
       ],
       '#limit_validation_errors' => [],
     ];
 
-    if ($frontify_wrapper_class) {
-      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['wrapper_class'] = $frontify_wrapper_class;
+    if ($config->frontify_wrapper_class) {
+      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['wrapper_class'] = $config->frontify_wrapper_class;
     }
 
-    if ($frontify_conext) {
-      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['context'] = $frontify_conext;
+    if ($config->frontify_context) {
+      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['context'] = $config->frontify_context;
     }
 
-    if ($trigger_element) {
-      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['trigger_element'] = $trigger_element;
+    if ($config->trigger_element) {
+      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['trigger_element'] = $config->trigger_element;
     }
 
-    if ($trigger_event) {
-      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['trigger_event'] = $trigger_event;
+    if ($config->trigger_event) {
+      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['trigger_event'] = $config->trigger_event;
     }
 
-    if ($select_add_button_class) {
-      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['select_add_button_class'] = $select_add_button_class;
+    if ($config->select_add_button_class) {
+      $fields['container']['open']['#attached']['drupalSettings']['Frontify']['select_add_button_class'] = $config->select_add_button_class;
     }
 
     $fields['container']['frontify_finder_wrapper'] = [
