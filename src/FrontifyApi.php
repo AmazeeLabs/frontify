@@ -31,27 +31,35 @@ final class FrontifyApi {
   public function frontifyQuery(string $query): array {
     // Default is a readonly token for Frontify API. Safe to use in code.
     // If more capabilities are needed, a separate token should be created.
-    $token = $this->configFactory->get('frontify.settings')->get('frontify_api_token');
+    $config = $this->configFactory->get('frontify.settings');
+
+    $token = $config->get('frontify_api_token');
     if (empty($token)) {
       $this->messenger->addError('Frontify API token is not set.');
     }
 
-    $apiUrl = $this->configFactory->get('frontify.settings')->get('frontify_api_url');
+    $apiUrl = $config->get('frontify_api_url');
     if (empty($apiUrl)) {
       $this->messenger->addError('Frontify API url is not set.');
     }
 
     $result = [];
     try {
+      $headers = [
+        'Authorization' => 'Bearer ' . $token,
+        'Content-Type' => 'application/json',
+      ];
+      $betaVersion = $config->get('frontify_api_beta') === 1;
+      if ($betaVersion) {
+        $headers['X-Frontify-Beta'] = 'enabled';
+      }
       $response = $this->httpClient->post($apiUrl . '/graphql', [
-        'headers' => [
-          'Authorization' => 'Bearer ' . $token,
-          'Content-Type' => 'application/json',
-        ],
+        'headers' => $headers,
         'json' => [
           'query' => $query,
         ],
       ]);
+
       $result = json_decode((string) $response->getBody(), TRUE, 512, JSON_THROW_ON_ERROR);
     }
     catch (\Exception $e) {
