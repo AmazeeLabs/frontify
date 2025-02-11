@@ -71,6 +71,10 @@ final class FrontifyApi {
 
   /**
    * GraphQL query to get custom metadata for a Frontify asset.
+   *
+   * @param string $frontify_asset_id
+   *
+   * @return array
    */
   public function getCustomMetaData(string $frontify_asset_id): array {
     try {
@@ -99,6 +103,44 @@ final class FrontifyApi {
     }
 
     return [];
+  }
+
+  /**
+   * GraphQL query to get an Image alt text.
+   *
+   * Beta version only.
+   *
+   * @param string $frontify_asset_id
+   *
+   * @return string|null
+   */
+  public function getImageAltText(string $frontify_asset_id): ?string {
+    $config = $this->configFactory->get('frontify.settings');
+    if ($config->get('frontify_api_beta') !== 1) {
+      \Drupal::logger('frontify')->warning($this->t('Alt text query can currently be used with Beta API only. This can be changed in Frontify settings form.'));
+      return NULL;
+    }
+
+    try {
+      $query = 'query GetImageAltText {
+        asset(id: "' . $frontify_asset_id . '") {
+          id
+          ... on Image {
+            alternativeText
+          }
+        }
+      }';
+
+      $queryResult = $this->frontifyQuery($query);
+      if (!empty($queryResult['data']['asset']['alternativeText'])) {
+        return $queryResult['data']['asset']['alternativeText'];
+      }
+    }
+    catch (\Exception $e) {
+      $this->messenger->addError('Error: @message', ['@message' => $e->getMessage()]);
+    }
+
+    return NULL;
   }
 
 }
