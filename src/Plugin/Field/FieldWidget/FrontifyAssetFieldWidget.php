@@ -21,6 +21,8 @@ use Drupal\link\Plugin\Field\FieldWidget\LinkWidget;
 )]
 class FrontifyAssetFieldWidget extends LinkWidget {
 
+  protected const int PREVIEW_IMAGE_WIDTH = 400;
+
   /**
    * Form element validation handler for the 'uri' element.
    *
@@ -63,7 +65,7 @@ class FrontifyAssetFieldWidget extends LinkWidget {
 
     $element['frontify_preview'] = [
       '#theme' => 'image',
-      '#uri' => $item->uri,
+      '#uri' => $item->uri . '?width=' . self::PREVIEW_IMAGE_WIDTH,
       '#alt' => $item->name,
       '#title' => $item->name,
       '#attributes' => [
@@ -102,6 +104,7 @@ class FrontifyAssetFieldWidget extends LinkWidget {
             'context' => 'media_form',
             'api_url' => $config->get('frontify_api_url'),
             'debug_mode' => $config->get('debug_mode'),
+            'preview_image_width' => self::PREVIEW_IMAGE_WIDTH,
           ],
         ],
       ],
