@@ -68,7 +68,7 @@
               assets[0].previewUrl;
             $fieldItem
               .querySelector('img.frontify-image-preview')
-              .setAttribute('src', assets[0].previewUrl);
+              .setAttribute('src', assets[0].previewUrl + '?width=' + drupalSettings.Frontify.preview_image_width);
             $fieldItem.querySelector('input.frontify-asset-id').value =
               assets[0].id;
             $fieldItem.querySelector('input.frontify-asset-name').value =
