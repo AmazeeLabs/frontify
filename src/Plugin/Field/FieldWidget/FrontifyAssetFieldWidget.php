@@ -63,9 +63,14 @@ class FrontifyAssetFieldWidget extends LinkWidget {
     $config = \Drupal::config('frontify.settings');
     $item = $items[$delta];
 
+    $previewImageUri = $item->uri;
+    if (!empty($previewImageUri)) {
+      $previewImageUri = '?width=' . self::PREVIEW_IMAGE_WIDTH;
+    }
+
     $element['frontify_preview'] = [
       '#theme' => 'image',
-      '#uri' => $item->uri . '?width=' . self::PREVIEW_IMAGE_WIDTH,
+      '#uri' => $previewImageUri,
       '#alt' => $item->name,
       '#title' => $item->name,
       '#attributes' => [
