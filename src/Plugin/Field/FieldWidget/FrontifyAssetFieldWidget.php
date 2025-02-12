@@ -65,7 +65,7 @@ class FrontifyAssetFieldWidget extends LinkWidget {
 
     $previewImageUri = $item->uri;
     if (!empty($previewImageUri)) {
-      $previewImageUri = '?width=' . self::PREVIEW_IMAGE_WIDTH;
+      $previewImageUri .= '?width=' . self::PREVIEW_IMAGE_WIDTH;
     }
 
     $element['frontify_preview'] = [
