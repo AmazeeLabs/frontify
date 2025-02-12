@@ -13,7 +13,7 @@
           case 'media_library':
             Drupal.frontifyMediaLibrary.handleFinder(el);
             break;
-          case 'media_form':
+          case 'entity_form':
             Drupal.frontifyMediaForm.handleFinder(el);
             break;
           default:

@@ -2,6 +2,7 @@
 
 namespace Drupal\frontify\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\Plugin\DataType\EntityAdapter;
 use Drupal\Core\Field\Attribute\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -92,6 +93,10 @@ class FrontifyAssetFieldWidget extends LinkWidget {
       ],
     ];
 
+
+    $parent = $items->getParent();
+    $entityTypeId = $parent instanceof EntityAdapter ? $parent->getEntity()->getEntityTypeId() : '';
+
     $element['open'] = [
       '#type' => 'button',
       '#value' => $this->t('Open Frontify'),
@@ -102,14 +107,15 @@ class FrontifyAssetFieldWidget extends LinkWidget {
       '#attached' => [
         'library' => [
           'frontify/frontify_once',
-          'frontify/frontify_media_form',
+          'frontify/frontify_entity_form',
         ],
         'drupalSettings' => [
           'Frontify' => [
-            'context' => 'media_form',
+            'context' => 'entity_form',
             'api_url' => $config->get('frontify_api_url'),
             'debug_mode' => $config->get('debug_mode'),
             'preview_image_width' => self::PREVIEW_IMAGE_WIDTH,
+            'parent_entity_type_id' => $entityTypeId,
           ],
         ],
       ],
