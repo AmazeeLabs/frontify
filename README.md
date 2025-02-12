@@ -13,6 +13,7 @@ Difference with v2 and v3:
 - Isolates mime type groups for Frontify assets, just as Drupal does (Frontify Image, Frontify Document, Frontify Video)
 - Moves the `alt text` field in a generic json field with other metadata, so it's not specific to images
 and the field type can be used for Video, Documents, ...
+- Make the Frontify field widget entity type agnostic, so it can also be used with other entity types than Media
 - Adds the Frontify name so it can be used as the media name without using javascript specifics
 - Adds the Frontify ID in the custom Frontify asset field so it can be used by other processes to interact with the Frontify API
 - Adds an optional PHP GraphQL API wrapper for the Frontify API
