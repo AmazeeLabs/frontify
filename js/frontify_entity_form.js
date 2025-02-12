@@ -6,7 +6,6 @@
 (function () {
   Drupal.frontifyMediaForm = {
     handleFinder(el) {
-      console.log('Frontify media form');
       el.addEventListener('click', async element => {
         element.currentTarget.disabled = true;
         // Handle unlimited fields.
@@ -31,9 +30,9 @@
             domain: drupalSettings.Frontify.api_url,
             options: {
               permanentDownloadUrls: true,
-              // @todo configure extensions based on the media bundle.
-              //   this should be done as a third party setting of the Media provider
-              //   and selected based on its type.
+              // @todo configure extensions based on the field, so no need
+              //   to bind this to a specific media entity, and the field widget
+              //   can be used independently.
               filters: [
                 {
                   key: 'ext',
@@ -76,8 +75,10 @@
             $fieldItem.querySelector('textarea.frontify-asset-metadata').value =
               JSON.stringify(assets[0]);
 
-            // Media name
-            document.querySelector('#edit-name-wrapper input').value = assets[0].title;
+            // Media specifics: set the Media name from the Frontify one.
+            if (drupalSettings.Frontify.parent_entity_type_id === 'media') {
+              document.querySelector('#edit-name-wrapper input').value = assets[0].title;
+            }
 
             $field
               .querySelector('.frontify-wrapper-finder-overlay')
