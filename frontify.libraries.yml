@@ -17,13 +17,13 @@ frontify_media_library:
     - core/drupal
     - core/drupalSettings
     - frontify/frontify_finder
-frontify_media_form:
+frontify_entity_form:
   version: 1.x
   js:
-    js/frontify_media_form.js: { }
+    js/frontify_entity_form.js: { }
   css:
     component:
-      css/frontify_media_form.css: { }
+      css/frontify_entity_form.css: { }
   dependencies:
     - core/drupal
     - frontify/frontify_finder

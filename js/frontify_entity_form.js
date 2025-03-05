@@ -30,9 +30,9 @@
             domain: drupalSettings.Frontify.api_url,
             options: {
               permanentDownloadUrls: true,
-              // @todo configure extensions based on the media bundle.
-              //   this should be done as a third party setting of the Media provider
-              //   and selected based on its type.
+              // @todo configure extensions based on the field, so no need
+              //   to bind this to a specific media entity, and the field widget
+              //   can be used independently.
               filters: [
                 {
                   key: 'ext',
@@ -67,7 +67,7 @@
               assets[0].previewUrl;
             $fieldItem
               .querySelector('img.frontify-image-preview')
-              .setAttribute('src', assets[0].previewUrl);
+              .setAttribute('src', assets[0].previewUrl + '?width=' + drupalSettings.Frontify.preview_image_width);
             $fieldItem.querySelector('input.frontify-asset-id').value =
               assets[0].id;
             $fieldItem.querySelector('input.frontify-asset-name').value =
@@ -75,8 +75,10 @@
             $fieldItem.querySelector('textarea.frontify-asset-metadata').value =
               JSON.stringify(assets[0]);
 
-            // Media name
-            document.querySelector('#edit-name-wrapper input').value = assets[0].title;
+            // Media specifics: set the Media name from the Frontify one.
+            if (drupalSettings.Frontify.parent_entity_type_id === 'media') {
+              document.querySelector('#edit-name-wrapper input').value = assets[0].title;
+            }
 
             $field
               .querySelector('.frontify-wrapper-finder-overlay')

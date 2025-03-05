@@ -42,6 +42,17 @@ class SettingsForm extends ConfigFormBase {
       '#required' => FALSE,
       '#description' => $this->t('Only needed when interacting with the GraphQL API https://developer.frontify.com/document/2570#/introduction/graphql-api'),
     ];
+    $form['api']['beta'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use beta version'),
+      '#description' => $this->t('Get access early to new features (might be subject to change, use wisely). Injects the <code>X-Frontify-Beta: enabled</code> header.'),
+      '#default_value' => $config->get('frontify_api_beta'),
+      '#states' => [
+        'visible' => [
+          'input[name="token"]' => ['filled' => TRUE],
+        ],
+      ],
+    ];
 
     $form['debug_settings'] = [
       '#type' => 'details',
@@ -66,6 +77,7 @@ class SettingsForm extends ConfigFormBase {
     $config = $this->config('frontify.settings');
     $config->set('frontify_api_url', $form_state->getValue('url'));
     $config->set('frontify_api_token', $form_state->getValue('token'));
+    $config->set('frontify_api_beta', $form_state->getValue('beta'));
     $config->set('debug_mode', $form_state->getValue('debug_mode'));
 
     $config->save();

@@ -2,6 +2,7 @@
 
 namespace Drupal\frontify\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\Plugin\DataType\EntityAdapter;
 use Drupal\Core\Field\Attribute\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -20,6 +21,8 @@ use Drupal\link\Plugin\Field\FieldWidget\LinkWidget;
   field_types: ["frontify_asset_field"],
 )]
 class FrontifyAssetFieldWidget extends LinkWidget {
+
+  protected const int PREVIEW_IMAGE_WIDTH = 400;
 
   /**
    * Form element validation handler for the 'uri' element.
@@ -61,9 +64,14 @@ class FrontifyAssetFieldWidget extends LinkWidget {
     $config = \Drupal::config('frontify.settings');
     $item = $items[$delta];
 
+    $previewImageUri = $item->uri;
+    if (!empty($previewImageUri)) {
+      $previewImageUri .= '?width=' . self::PREVIEW_IMAGE_WIDTH;
+    }
+
     $element['frontify_preview'] = [
       '#theme' => 'image',
-      '#uri' => $item->uri,
+      '#uri' => $previewImageUri,
       '#alt' => $item->name,
       '#title' => $item->name,
       '#attributes' => [
@@ -85,6 +93,10 @@ class FrontifyAssetFieldWidget extends LinkWidget {
       ],
     ];
 
+
+    $parent = $items->getParent();
+    $entityTypeId = $parent instanceof EntityAdapter ? $parent->getEntity()->getEntityTypeId() : '';
+
     $element['open'] = [
       '#type' => 'button',
       '#value' => $this->t('Open Frontify'),
@@ -95,13 +107,15 @@ class FrontifyAssetFieldWidget extends LinkWidget {
       '#attached' => [
         'library' => [
           'frontify/frontify_once',
-          'frontify/frontify_media_form',
+          'frontify/frontify_entity_form',
         ],
         'drupalSettings' => [
           'Frontify' => [
-            'context' => 'media_form',
+            'context' => 'entity_form',
             'api_url' => $config->get('frontify_api_url'),
             'debug_mode' => $config->get('debug_mode'),
+            'preview_image_width' => self::PREVIEW_IMAGE_WIDTH,
+            'parent_entity_type_id' => $entityTypeId,
           ],
         ],
       ],
