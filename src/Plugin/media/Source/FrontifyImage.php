@@ -144,6 +144,21 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
       '#description' => $this->t('Disable the global "Add" feature (example: /media/add/frontify_image). When using a DAM, it make sense to only add a reference via host entities and not create them globally. This is especially the case since we replace the Media Library with the Frontify Finder.'),
     ];
 
+    $moduleHandler = \Drupal::service('module_handler');
+    $form['warm_image_styles'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Warm up the image styles.'),
+      '#default_value' => $this->configuration['warm_image_styles'],
+      '#description' => $this->t('When a new image is added to the media library, warm up the image styles.'),
+      '#disabled' => !$moduleHandler->moduleExists('imagecache_external'),
+    ];
+    if (!$moduleHandler->moduleExists('imagecache_external')) {
+      $form['warm_image_styles']['#description'] .= '<br/>' . $this->t('This feature requires the <a href="@url">Image Cache External module<a/> to be installed and enabled.', [
+        '@url' => 'https://www.drupal.org/project/imagecache_external',
+      ]);
+      $this->configuration['warm_image_styles'] = 0;
+    }
+
     return $form;
   }
 
@@ -163,6 +178,7 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
     return parent::defaultConfiguration() + [
       'deduplicate' => 1,
       'disable_global_add' => 1,
+      'warm_image_styles' => 0,
     ];
   }
 
