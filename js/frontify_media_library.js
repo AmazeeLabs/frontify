@@ -14,6 +14,7 @@
         const selectAddButtonClass = drupalSettings.Frontify.select_add_button_class || '.add-to-drupal';
         const enableImagePreview = drupalSettings.Frontify.enable_image_preview;
         const hideOpenButton = drupalSettings.Frontify.hide_open_button;
+        const enableImageStyles = drupalSettings.Frontify.enable_image_styles;
 
         // Start looking for the elements.
         const $mediaLibraryWrapper = document.querySelector(wrapperClass);
@@ -49,6 +50,21 @@
         const $addToDrupalButton = $mediaLibraryWrapper.querySelector(selectAddButtonClass);
         if ($addToDrupalButton) {
           $addToDrupalButton.disabled = true;
+        }
+
+        if (enableImageStyles) {
+          $addToDrupalButton.addEventListener('click', (event) => {
+            const processingMessage = '<div class="ajax-progress ajax-progress--throbber"><div class="ajax-progress__throbber">&nbsp;</div><div class="ajax-progress__message">' + Drupal.t('Building image styles, please wait...') + '</div></div>';
+            $frontifyAutoSelect.insertAdjacentHTML('afterend', processingMessage);
+
+            // Defer the disabling to allow the form to submit
+            setTimeout(() => {
+              if ($frontifyAutoSelect) {
+                $frontifyAutoSelect.disabled = true;
+              }
+              $addToDrupalButton.disabled = true;
+            }, 0);
+          });
         }
 
         try {

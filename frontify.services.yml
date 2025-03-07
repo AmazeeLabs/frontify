@@ -3,6 +3,10 @@ services:
     class: Drupal\frontify\FrontifyApi
     arguments: ['@http_client', '@config.factory', '@messenger']
 
+  frontify.utils:
+    class: Drupal\frontify\FrontifyUtils
+    arguments: ['@entity_type.manager']
+
   frontify.directive:
     class: Drupal\frontify\FrontifyDirective
 
