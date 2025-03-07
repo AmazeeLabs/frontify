@@ -158,6 +158,20 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
       ]);
       $this->configuration['warm_image_styles'] = 0;
     }
+    $warm_image_styles_options = $this->findAvailableImageStyles();
+    $form['warm_image_styles_options'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Image styles to warm up'),
+      '#options' => $warm_image_styles_options,
+      '#default_value' => $this->configuration['warm_image_styles_options'],
+      '#description' => $this->t('Select the image styles to warm up, if not selected all image styles will be warmed up.') . '<br/>' . $this->t('WARNING: This can be a very resource-intensive operation, especially if you have a lot of image styles.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="source_configuration[warm_image_styles]"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#disabled' => !$moduleHandler->moduleExists('imagecache_external'),
+    ];
 
     return $form;
   }
@@ -179,7 +193,20 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
       'deduplicate' => 1,
       'disable_global_add' => 1,
       'warm_image_styles' => 0,
+      'warm_image_styles_options' => [],
     ];
+  }
+
+  /**
+   * Returns the available image styles.
+   */
+  private function findAvailableImageStyles(): array {
+    $image_styles = \Drupal::entityTypeManager()->getStorage('image_style')->loadMultiple();
+    $options = [];
+    foreach ($image_styles as $image_style) {
+      $options[$image_style->id()] = $image_style->label();
+    }
+    return $options;
   }
 
   /**
@@ -194,6 +221,7 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
    * @return string|null
    *   The local thumbnail URI, or NULL if it could not be downloaded, or if the
    *   resource has no thumbnail at all.
+   * @throws \GuzzleHttp\Exception\GuzzleException
    */
   private function getLocalThumbnailUri(string $url): ?string {
     $directoryName = 'frontify_image_thumbnails';

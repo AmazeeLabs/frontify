@@ -106,6 +106,7 @@ class FrontifyFinder extends WidgetBase {
       ->getName();
     $deduplicate = !empty($media_type_configuration['deduplicate']) && $media_type_configuration['deduplicate'] === 1;
     $warmImageStyles = !empty($media_type_configuration['warm_image_styles']) && $media_type_configuration['warm_image_styles'] === 1;
+    $warmImageStyleOptions = !empty($media_type_configuration['warm_image_styles_options']) ? $media_type_configuration['warm_image_styles_options'] : [];
 
     if ($deduplicate) {
       // Check first if the Media exists, and if so, return it, so
@@ -140,7 +141,7 @@ class FrontifyFinder extends WidgetBase {
     if ($warmImageStyles) {
       /** @var \Drupal\frontify\FrontifyUtils $frontifyUtils */
       $frontifyUtils = \Drupal::service('frontify.utils');
-      $frontifyUtils->warmImageStyles($form_state->getValue('uri'));
+      $frontifyUtils->warmImageStyles($form_state->getValue('uri'), $warmImageStyleOptions);
     }
 
     return $entities;

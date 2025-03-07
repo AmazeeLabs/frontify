@@ -24,7 +24,7 @@ final class FrontifyUtils {
    *
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function warmImageStyles($url): void {
+  public function warmImageStyles($url, $limited_styles = []): void {
     if (!function_exists('imagecache_external_generate_path')) {
       \Drupal::logger('frontify')->warning('Function imagecache_external_generate_path is not available. Make sure the imagecache_external module is installed and enabled.');
       return;
@@ -32,7 +32,15 @@ final class FrontifyUtils {
 
     $local_uri = imagecache_external_generate_path($url);
 
-    $available_styles = $this->imageStyles->loadMultiple();
+    $all_image_styles = $this->imageStyles->loadMultiple();
+    if (!empty($limited_styles)) {
+      $available_styles = array_filter($all_image_styles, function ($style) use ($limited_styles) {
+        return in_array($style->id(), $limited_styles);
+      });
+    } else {
+      $available_styles = $all_image_styles;
+    }
+
     foreach ($available_styles as $style) {
       $derivative_uri = $style->buildUri($local_uri);
       if (!file_exists($derivative_uri)) {
