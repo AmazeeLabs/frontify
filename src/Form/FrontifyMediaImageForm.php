@@ -126,6 +126,9 @@ class FrontifyMediaImageForm extends AddFormBase {
 
     // Configuration for Frontify UI.
     $frontifyUiConfig = new FrontifyUiConfig();
+    $frontifyUiConfig->trigger_element = '[id="frontify-finder-open-button"]';
+    $frontifyUiConfig->enable_image_preview = TRUE;
+    $frontifyUiConfig->enable_image_styles = TRUE;
     $fields = $frontifyFieldUiService->getFieldsUi($frontifyUiConfig);
 
     if (isset($fields['message'])) {
@@ -194,9 +197,11 @@ class FrontifyMediaImageForm extends AddFormBase {
     $source_field_name,
     FormStateInterface $form_state
   ) {
+    $returned_media = NULL;
     $media_type_configuration = $media_type->getSource()->getConfiguration();
-    $deduplicate = !empty($media_type_configuration['deduplicate']) &&
-      $media_type_configuration['deduplicate'] === 1;
+    $deduplicate = !empty($media_type_configuration['deduplicate']) && $media_type_configuration['deduplicate'] === 1;
+    $warmImageStyles = !empty($media_type_configuration['warm_image_styles']) && $media_type_configuration['warm_image_styles'] === 1;
+    $warmImageStyleOptions = !empty($media_type_configuration['warm_image_styles_options']) ? $media_type_configuration['warm_image_styles_options'] : [];
 
     if ($deduplicate) {
       // Check first if the Media exists, and if so, return it, so
@@ -209,21 +214,31 @@ class FrontifyMediaImageForm extends AddFormBase {
       $media_ids = $query->execute();
       if (!empty($media_ids)) {
         $media_id = reset($media_ids);
-        return $media_storage->load($media_id);
+        $returned_media = $media_storage->load($media_id);
       }
     }
 
-    $media = $media_storage->create([
-      'bundle' => $media_type->id(),
-      $source_field_name => [
-        'uri' => $form_state->getValue('uri'),
-        'id' => $form_state->getValue('id'),
-        'name' => $form_state->getValue('name'),
-        'metadata' => $form_state->getValue('metadata'),
-      ],
-    ]);
-    $media->setName($form_state->getValue('name'));
-    return $media;
+    if (!$returned_media) {
+      $media = $media_storage->create([
+        'bundle' => $media_type->id(),
+        $source_field_name => [
+          'uri' => $form_state->getValue('uri'),
+          'id' => $form_state->getValue('id'),
+          'name' => $form_state->getValue('name'),
+          'metadata' => $form_state->getValue('metadata'),
+        ],
+      ]);
+      $media->setName($form_state->getValue('name'));
+      $returned_media = $media;
+    }
+
+    if ($warmImageStyles) {
+      /** @var \Drupal\frontify\FrontifyUtils $frontifyUtils */
+      $frontifyUtils = \Drupal::service('frontify.utils');
+      $frontifyUtils->warmImageStyles($form_state->getValue('uri'), $warmImageStyleOptions);
+    }
+
+    return $returned_media;
   }
 
   /**

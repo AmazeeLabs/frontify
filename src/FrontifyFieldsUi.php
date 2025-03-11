@@ -132,6 +132,13 @@ final class FrontifyFieldsUi {
       '#type' => 'markup',
       '#markup' => '<div class="frontify-image-preview"></div>',
     ];
+    $messageClass = 'frontify-message-information';
+    $fields['container']['messages_information'] = [
+      '#type' => 'markup',
+      '#markup' => '<div class="' . $messageClass . '"></div>',
+    ];
+    $fields['container']['open']['#attached']['drupalSettings']['Frontify']['message_element'] = '.' . $messageClass;
+
     $fields['container']['frontify_fields'] = [
       '#title' => $this->t('Frontify fields'),
       '#type' => 'details',

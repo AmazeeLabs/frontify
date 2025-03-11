@@ -15,6 +15,9 @@
         const enableImagePreview = drupalSettings.Frontify.enable_image_preview;
         const hideOpenButton = drupalSettings.Frontify.hide_open_button;
         const enableImageStyles = drupalSettings.Frontify.enable_image_styles;
+        const messageElement = drupalSettings.Frontify.message_element || '.frontify-message-information';
+
+        // .frontify-finder-wrapper
 
         // Start looking for the elements.
         const $mediaLibraryWrapper = document.querySelector(wrapperClass);
@@ -26,6 +29,9 @@
         const $frontifyIdField = $mediaLibraryWrapper.querySelector('.js-form-item-id');
         const $frontifyMetadataField = $mediaLibraryWrapper.querySelector('.js-form-item-metadata');
         const $frontifyImagePreivew = $mediaLibraryWrapper.querySelector('.frontify-image-preview');
+        const $frontifyMessageElement = $mediaLibraryWrapper.querySelector(messageElement);
+
+        const isInModal = $mediaLibraryWrapper.closest('#drupal-modal') !== null;
 
         // Look for an optional field to auto-select the entity browser widget.
         let $frontifyAutoSelect = null;
@@ -52,10 +58,41 @@
           $addToDrupalButton.disabled = true;
         }
 
+        // Resize the finder wrapper to fit the modal.
+        function resizeFinderWrapper($finderWrapper) {
+          const $modal = document.querySelector('#drupal-modal');
+          if ($modal) {
+            // Account for padding and other elements
+            const modalHeight = $modal.clientHeight;
+            const padding = 40; // Adjust this value based on your modal's padding
+            $finderWrapper.style.height = `${modalHeight - padding}px`;
+          }
+        }
+
+        //
+        let $mediaInsertButton = null;
+        if (isInModal) {
+          $mediaInsertButton = document.querySelector('.ui-dialog-buttonset .media-library-select');
+          if ($mediaInsertButton) {
+            $mediaInsertButton.disabled = true;
+          }
+          resizeFinderWrapper($finderWrapper);
+
+          // Handle window resize
+          const resizeObserver = new ResizeObserver(() => {
+            resizeFinderWrapper($finderWrapper);
+          });
+
+          // Observe the modal for size changes
+          const $modal = document.querySelector('#drupal-modal');
+          if ($modal) {
+            resizeObserver.observe($modal);
+          }
+        }
+
         if (enableImageStyles) {
           $addToDrupalButton.addEventListener('click', (event) => {
-            const processingMessage = '<div class="ajax-progress ajax-progress--throbber"><div class="ajax-progress__throbber">&nbsp;</div><div class="ajax-progress__message">' + Drupal.t('Building image styles, please wait...') + '</div></div>';
-            $frontifyAutoSelect.insertAdjacentHTML('afterend', processingMessage);
+            $frontifyMessageElement.innerHTML = '<div class="ajax-progress ajax-progress--throbber"><div class="ajax-progress__throbber">&nbsp;</div><div class="ajax-progress__message">' + Drupal.t('Building image styles, please wait...') + '</div></div>';
 
             // Defer the disabling to allow the form to submit
             setTimeout(() => {
@@ -63,6 +100,9 @@
                 $frontifyAutoSelect.disabled = true;
               }
               $addToDrupalButton.disabled = true;
+              if ($mediaInsertButton) {
+                $mediaInsertButton.disabled = true;
+              }
             }, 0);
           });
         }
@@ -153,6 +193,9 @@
             if ($addToDrupalButton) {
               $addToDrupalButton.disabled = false;
             }
+            if ($mediaInsertButton) {
+              $mediaInsertButton.disabled = false;
+            }
 
             // Trigger an event to auto-select the entity browser widget.
             if ($frontifyAutoSelect && drupalSettings.Frontify.trigger_event) {
@@ -180,6 +223,9 @@
             if ($addToDrupalButton) {
               $addToDrupalButton.disabled = true;
             }
+            if ($mediaInsertButton) {
+              $mediaInsertButton.disabled = true;
+            }
           });
 
           $finderWrapper.style.display = 'flex';
@@ -197,6 +243,9 @@
           button.target.disabled = false;
           if ($addToDrupalButton) {
             $addToDrupalButton.disabled = false;
+          }
+          if ($mediaInsertButton) {
+            $mediaInsertButton.disabled = false;
           }
         }
       });
