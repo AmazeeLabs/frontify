@@ -56,28 +56,32 @@
             },
           });
           if (drupalSettings.Frontify.debug_mode) {
-            console.log($finder);
+            console.log("$finder", $finder);
           }
           // Add listener for assets chosen.
           $finder.onAssetsChosen(assets => {
             if (drupalSettings.Frontify.debug_mode) {
-              console.log(assets);
+              console.log("onAssetsChosen", assets);
             }
-            $fieldItem.querySelector('input.frontify-asset-link-url').value =
-              assets[0].previewUrl;
+            $fieldItem.querySelector('input.frontify-asset-link-url').value = assets[0].previewUrl;
             $fieldItem
               .querySelector('img.frontify-image-preview')
               .setAttribute('src', assets[0].previewUrl + '?width=' + drupalSettings.Frontify.preview_image_width);
-            $fieldItem.querySelector('input.frontify-asset-id').value =
-              assets[0].id;
-            $fieldItem.querySelector('input.frontify-asset-name').value =
-              assets[0].title;
-            $fieldItem.querySelector('textarea.frontify-asset-metadata').value =
-              JSON.stringify(assets[0]);
+            $fieldItem.querySelector('input.frontify-asset-id').value = assets[0].id;
+            $fieldItem.querySelector('input.frontify-asset-name').value = assets[0].title;
+            $fieldItem.querySelector('textarea.frontify-asset-metadata').value = JSON.stringify(assets[0]);
 
+            if (drupalSettings.Frontify.debug_mode) {
+              console.log('parent_entity_type_id', drupalSettings.Frontify.parent_entity_type_id);
+            }
             // Media specifics: set the Media name from the Frontify one.
             if (drupalSettings.Frontify.parent_entity_type_id === 'media') {
-              document.querySelector('#edit-name-wrapper input').value = assets[0].title;
+              const $mediaName = document.querySelector('[data-drupal-selector="edit-name-wrapper"] input');
+              if ($mediaName) {
+                $mediaName.value = assets[0].title;
+              } else {
+                console.log('Could not find the media name field.');
+              }
             }
 
             $field
@@ -86,6 +90,9 @@
             element.target.disabled = false;
             $wrapper.style.display = 'none';
             $wrapper.replaceChildren();
+            if (drupalSettings.Frontify.debug_mode) {
+              console.log('end');
+            }
           });
 
           // Add listener for user abortion.
