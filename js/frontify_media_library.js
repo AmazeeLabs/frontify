@@ -112,6 +112,44 @@
           }
         }
 
+        function updateMediaButtonState() {
+          if (!$mediaInsertButton) return;
+
+          // Find all checkboxes under the media library rows
+          const checkboxes = document.querySelectorAll('.media-library-views-form__rows input[type="checkbox"]');
+
+          // Check if any checkbox is checked
+          const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+          // Update button state
+          $mediaInsertButton.disabled = !anyChecked;
+
+          if (drupalSettings.Frontify && drupalSettings.Frontify.debug_mode) {
+            console.log(`${anyChecked ? '🔓 Enabled' : '🔒 Disabled'} media insert button in modal`);
+          }
+        }
+
+        // Add event listeners to checkboxes
+        function setupCheckboxListeners() {
+          const checkboxesContainer = document.querySelector('.media-library-views-form__rows');
+
+          if (!checkboxesContainer) return;
+
+          // Add event delegation to handle both existing and future checkboxes
+          checkboxesContainer.addEventListener('change', function(event) {
+            if (event.target.type === 'checkbox') {
+              updateMediaButtonState();
+            }
+          });
+
+          // Initial state setup
+          updateMediaButtonState();
+
+          if (drupalSettings.Frontify && drupalSettings.Frontify.debug_mode) {
+            console.log('📋 Set up checkbox change listener on media library rows');
+          }
+        }
+
         let $mediaInsertButton = null;
         if (isInModal) {
           $mediaInsertButton = document.querySelector('.ui-dialog-buttonset .media-library-select');
@@ -120,6 +158,21 @@
             if (drupalSettings.Frontify.debug_mode) {
               console.log('🔒 Disabled media insert button in modal');
             }
+
+            // Run setup
+            setupCheckboxListeners();
+
+            // Set up a MutationObserver to handle cases where the checkboxes container might be added after page load
+            const bodyObserver = new MutationObserver(() => {
+              if (document.querySelector('.media-library-views-form__rows')) {
+                setupCheckboxListeners();
+                if (drupalSettings.Frontify && drupalSettings.Frontify.debug_mode) {
+                  console.log('👀 Detected media library rows added to DOM');
+                }
+              }
+            });
+
+            bodyObserver.observe(document.body, { childList: true, subtree: true });
           }
           resizeFinderWrapper($finderWrapper);
 
@@ -158,13 +211,6 @@
               $addToDrupalButton.disabled = true;
               if (drupalSettings.Frontify.debug_mode) {
                 console.log('🔒 Disabled add to Drupal button');
-              }
-
-              if ($mediaInsertButton) {
-                $mediaInsertButton.disabled = true;
-                if (drupalSettings.Frontify.debug_mode) {
-                  console.log('🔒 Disabled media insert button');
-                }
               }
 
               if (drupalSettings.Frontify.debug_mode) {
@@ -282,13 +328,6 @@
               }
             }
 
-            if ($mediaInsertButton) {
-              $mediaInsertButton.disabled = false;
-              if (drupalSettings.Frontify.debug_mode) {
-                console.log('🔓 Media insert button enabled');
-              }
-            }
-
             // Trigger an event to auto-select the entity browser widget.
             if ($frontifyAutoSelect && drupalSettings.Frontify.trigger_event) {
               const event = new Event(drupalSettings.Frontify.trigger_event);
@@ -332,13 +371,6 @@
               }
             }
 
-            if ($mediaInsertButton) {
-              $mediaInsertButton.disabled = true;
-              if (drupalSettings.Frontify.debug_mode) {
-                console.log('🔒 Disabled media insert button');
-              }
-            }
-
             if (drupalSettings.Frontify.debug_mode) {
               console.log('🧹 Cleanup completed after cancellation');
               console.groupEnd();
@@ -371,13 +403,6 @@
             $addToDrupalButton.disabled = false;
             if (drupalSettings.Frontify.debug_mode) {
               console.log('🔓 Re-enabled add to Drupal button');
-            }
-          }
-
-          if ($mediaInsertButton) {
-            $mediaInsertButton.disabled = false;
-            if (drupalSettings.Frontify.debug_mode) {
-              console.log('🔓 Re-enabled media insert button');
             }
           }
 
