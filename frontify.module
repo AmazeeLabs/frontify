@@ -42,3 +42,22 @@ function frontify_preprocess_views_view(&$variables) {
     }
   }
 }
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function frontify_media_presave(\Drupal\media\MediaInterface $media) {
+  if ($media->bundle() === 'frontify') {
+    $config = $media->getSource()->getConfiguration();
+
+    $warmImageStyles = !empty($media_type_configuration['warm_image_styles']) && $media_type_configuration['warm_image_styles'] === 1;
+    $warmImageStyleOptions = !empty($media_type_configuration['warm_image_styles_options']) ? $media_type_configuration['warm_image_styles_options'] : [];
+
+    $url = $media->get($config['source_field'])->uri;
+    if ($warmImageStyles) {
+      /** @var \Drupal\frontify\FrontifyUtils $frontifyUtils */
+      $frontifyUtils = \Drupal::service('frontify.utils');
+      $frontifyUtils->warmImageStyles($url, $warmImageStyleOptions);
+    }
+  }
+}

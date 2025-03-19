@@ -58,6 +58,7 @@ class FrontifyFinder extends WidgetBase {
     $frontifyUiConfig->select_add_button_class = '[id="edit-submit"]';
     $frontifyUiConfig->hide_open_button = FALSE;
     $frontifyUiConfig->enable_image_preview = TRUE;
+    $frontifyUiConfig->enable_image_styles = TRUE;
 
     $fields = $frontifyFieldUiService->getFieldsUi($frontifyUiConfig);
 
@@ -104,6 +105,8 @@ class FrontifyFinder extends WidgetBase {
       ->getSourceFieldDefinition($media_type)
       ->getName();
     $deduplicate = !empty($media_type_configuration['deduplicate']) && $media_type_configuration['deduplicate'] === 1;
+    $warmImageStyles = !empty($media_type_configuration['warm_image_styles']) && $media_type_configuration['warm_image_styles'] === 1;
+    $warmImageStyleOptions = !empty($media_type_configuration['warm_image_styles_options']) ? $media_type_configuration['warm_image_styles_options'] : [];
 
     if ($deduplicate) {
       // Check first if the Media exists, and if so, return it, so
@@ -117,21 +120,30 @@ class FrontifyFinder extends WidgetBase {
       if (!empty($media_ids)) {
         $media_id = reset($media_ids);
         $entities[] = $media_storage->load($media_id);
-        return $entities;
       }
     }
 
-    $media = $media_storage->create([
-      'bundle' => $media_type->id(),
-      $source_field_name => [
-        'uri' => $form_state->getValue('uri'),
-        'id' => $form_state->getValue('id'),
-        'name' => $form_state->getValue('name'),
-        'metadata' => $form_state->getValue('metadata'),
-      ],
-    ]);
-    $media->setName($form_state->getValue('name'));
-    $entities[] = $media;
+    if (empty($entities)) {
+      $media = $media_storage->create([
+        'bundle' => $media_type->id(),
+        $source_field_name => [
+          'uri' => $form_state->getValue('uri'),
+          'id' => $form_state->getValue('id'),
+          'name' => $form_state->getValue('name'),
+          'metadata' => $form_state->getValue('metadata'),
+        ],
+      ]);
+      $media->setName($form_state->getValue('name'));
+      $entities[] = $media;
+    }
+
+
+    if ($warmImageStyles) {
+      /** @var \Drupal\frontify\FrontifyUtils $frontifyUtils */
+      $frontifyUtils = \Drupal::service('frontify.utils');
+      $frontifyUtils->warmImageStyles($form_state->getValue('uri'), $warmImageStyleOptions);
+    }
+
     return $entities;
   }
 

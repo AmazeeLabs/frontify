@@ -22,6 +22,7 @@ final class FrontifyUiConfig {
   public ?string $select_add_button_class = NULL;
   public bool $hide_open_button = TRUE;
   public bool $enable_image_preview = FALSE;
+  public bool $enable_image_styles = FALSE;
   public string $frontify_context = 'media_library';
 }
 
@@ -84,6 +85,7 @@ final class FrontifyFieldsUi {
               'debug_mode' => $frontifyDebugMode === 1,
               'hide_open_button' => $config->hide_open_button,
               'enable_image_preview' => $config->enable_image_preview,
+              'enable_image_styles' => $config->enable_image_styles,
             ],
         ],
       ],
@@ -130,6 +132,13 @@ final class FrontifyFieldsUi {
       '#type' => 'markup',
       '#markup' => '<div class="frontify-image-preview"></div>',
     ];
+    $messageClass = 'frontify-message-information';
+    $fields['container']['messages_information'] = [
+      '#type' => 'markup',
+      '#markup' => '<div class="' . $messageClass . '"></div>',
+    ];
+    $fields['container']['open']['#attached']['drupalSettings']['Frontify']['message_element'] = '.' . $messageClass;
+
     $fields['container']['frontify_fields'] = [
       '#title' => $this->t('Frontify fields'),
       '#type' => 'details',

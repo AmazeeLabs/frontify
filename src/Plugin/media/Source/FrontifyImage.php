@@ -144,6 +144,35 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
       '#description' => $this->t('Disable the global "Add" feature (example: /media/add/frontify_image). When using a DAM, it make sense to only add a reference via host entities and not create them globally. This is especially the case since we replace the Media Library with the Frontify Finder.'),
     ];
 
+    $moduleHandler = \Drupal::service('module_handler');
+    $form['warm_image_styles'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Warm up the image styles.'),
+      '#default_value' => $this->configuration['warm_image_styles'],
+      '#description' => $this->t('When a new image is added to the media library, warm up the image styles.'),
+      '#disabled' => !$moduleHandler->moduleExists('imagecache_external'),
+    ];
+    if (!$moduleHandler->moduleExists('imagecache_external')) {
+      $form['warm_image_styles']['#description'] .= '<br/>' . $this->t('This feature requires the <a href="@url">Image Cache External module<a/> to be installed and enabled.', [
+        '@url' => 'https://www.drupal.org/project/imagecache_external',
+      ]);
+      $this->configuration['warm_image_styles'] = 0;
+    }
+    $warm_image_styles_options = $this->findAvailableImageStyles();
+    $form['warm_image_styles_options'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Image styles to warm up'),
+      '#options' => $warm_image_styles_options,
+      '#default_value' => $this->configuration['warm_image_styles_options'],
+      '#description' => $this->t('Select the image styles to warm up, if not selected all image styles will be warmed up.') . '<br/>' . $this->t('WARNING: This can be a very resource-intensive operation, especially if you have a lot of image styles.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="source_configuration[warm_image_styles]"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#disabled' => !$moduleHandler->moduleExists('imagecache_external'),
+    ];
+
     return $form;
   }
 
@@ -163,7 +192,21 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
     return parent::defaultConfiguration() + [
       'deduplicate' => 1,
       'disable_global_add' => 1,
+      'warm_image_styles' => 0,
+      'warm_image_styles_options' => [],
     ];
+  }
+
+  /**
+   * Returns the available image styles.
+   */
+  private function findAvailableImageStyles(): array {
+    $image_styles = \Drupal::entityTypeManager()->getStorage('image_style')->loadMultiple();
+    $options = [];
+    foreach ($image_styles as $image_style) {
+      $options[$image_style->id()] = $image_style->label();
+    }
+    return $options;
   }
 
   /**
@@ -178,6 +221,7 @@ class FrontifyImage extends MediaSourceBase implements MediaSourceFieldConstrain
    * @return string|null
    *   The local thumbnail URI, or NULL if it could not be downloaded, or if the
    *   resource has no thumbnail at all.
+   * @throws \GuzzleHttp\Exception\GuzzleException
    */
   private function getLocalThumbnailUri(string $url): ?string {
     $directoryName = 'frontify_image_thumbnails';
