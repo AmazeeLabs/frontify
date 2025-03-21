@@ -58,10 +58,20 @@ final class FrontifyFieldsUi {
     }
 
     // Add a container to group the input elements for styling purposes.
+
+    $containerClasses = ['frontify-media-library-wrapper'];
+    if ($config->frontify_context === 'media_library') {
+      // Hide by default until Frontify finder is ready.
+      // This prevents a flash of content when opening the Media library
+      // and the user to interact with Drupal import
+      // before having the finder fully loaded.
+      $containerClasses[] = 'visually-hidden';
+    }
+
     $fields['container'] = [
       '#type' => 'container',
       '#attributes' => [
-        'class' => ['frontify-media-library-wrapper'],
+        'class' => $containerClasses,
       ],
     ];
 
