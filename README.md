@@ -19,6 +19,7 @@ and the field type can be used for Video, Documents, ...
 - Adds an optional PHP GraphQL API wrapper for the Frontify API
 - Integrates with Gutenberg Media library
 - Integrates with [GraphQL v4 directives](https://packagist.org/packages/amazeelabs/graphql_directives) for responsive images
+- Focal point support
 
 ### Use case for mime type groups
 

@@ -106,6 +106,35 @@ final class FrontifyApi {
   }
 
   /**
+   * GraphQL query to get the Focal point.
+   *
+   * @param string $frontify_asset_id
+   *
+   * @return array|null
+   */
+  public function getFocalPoint(string $frontify_asset_id): ?array {
+    try {
+      $query = 'query GetFocalPoint {
+        asset(id: "' . $frontify_asset_id . '") {
+          ... on Image {
+            focalPoint
+          }
+        }
+      }';
+
+      $queryResult = $this->frontifyQuery($query);
+      if (!empty($queryResult['data']['asset']['focalPoint'])) {
+        return $queryResult['data']['asset']['focalPoint'];
+      }
+    }
+    catch (\Exception $e) {
+      $this->messenger->addError('Error: @message', ['@message' => $e->getMessage()]);
+    }
+
+    return null;
+  }
+
+  /**
    * GraphQL query to get an Image alt text.
    *
    * Beta version only.
