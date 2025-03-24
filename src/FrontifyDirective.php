@@ -136,7 +136,7 @@ final class FrontifyDirective {
       // during initial import.
       if ($from_cache) {
         $frontifyMetadata = json_decode($mediaImage->get($frontifyField)->metadata);
-        $result = $frontifyMetadata->focalPoint;
+        $result = $frontifyMetadata->focalPoint ?? $result;
       }
       else {
         $frontifyId = $mediaImage->get($frontifyField)->id;
