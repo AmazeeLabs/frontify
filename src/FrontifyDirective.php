@@ -70,7 +70,7 @@ final class FrontifyDirective {
       return Json::encode($result);
     }
 
-    $focalPoint = $this->getFocalPoint($image['src']);
+    $focalPoint = $this->getFocalPoint($image['src'], TRUE);
     $ratio = $originalImageHeight / $originalImageWidth;
     // The image width and height in the response should be the same as the ones
     // sent as parameters.
@@ -104,12 +104,17 @@ final class FrontifyDirective {
    * Get the focal point from the Frontify API.
    *
    * @param string $src
+   *   Frontify url.
+   * @param bool $from_cache
+   *   API calls can take some time, it might be the preferred way to not use
+   *   the cache, because focal point can change, but that can cause
+   *   timeout during SSG.
    *
    * @return float[]
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  private function getFocalPoint(string $src): array {
+  private function getFocalPoint(string $src, bool $from_cache = FALSE): array {
     $result = [0.5, 0.5]; // fallback.
 
     // @todo we are assuming here a given field name, get it from the entity bundles that are relevant.
@@ -127,10 +132,18 @@ final class FrontifyDirective {
       $mediaImage->hasField($frontifyField) &&
       !$mediaImage->get($frontifyField)->isEmpty()
     ) {
-      $frontifyId = $mediaImage->get($frontifyField)->id;
-      /** @var \Drupal\frontify\FrontifyApi $frontifyApi */
-      $frontifyApi = \Drupal::service('frontify.api');
-      $focalPoint = $frontifyApi->getFocalPoint($frontifyId) ?? $focalPoint;
+      // Load focal point from Drupal snapshot that was done
+      // during initial import.
+      if ($from_cache) {
+        $frontifyMetadata = json_decode($mediaImage->get($frontifyField)->metadata);
+        $result = $frontifyMetadata->focalPoint;
+      }
+      else {
+        $frontifyId = $mediaImage->get($frontifyField)->id;
+        /** @var \Drupal\frontify\FrontifyApi $frontifyApi */
+        $frontifyApi = \Drupal::service('frontify.api');
+        $result = $frontifyApi->getFocalPoint($frontifyId) ?? $result;
+      }
     }
 
     return $result;
