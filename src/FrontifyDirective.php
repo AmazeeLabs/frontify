@@ -33,11 +33,13 @@ final class FrontifyDirective {
     }
 
     $imageSize = getimagesize($args->value);
+    $focalPoint = $this->getFocalPoint($args->value, TRUE);
 
     return [
       'src' => $args->value,
       'width' => $imageSize[0],
       'height' => $imageSize[1],
+      'focalPoint' => $focalPoint,
     ];
   }
 
@@ -56,6 +58,7 @@ final class FrontifyDirective {
     $image = $args->value;
     $originalImageWidth = $image['width'];
     $originalImageHeight = $image['height'];
+    $focalPoint = $image['focalPoint'];
 
     $width = $args->args['width'];
     // height can be null, use the ratio to set it in this case
@@ -70,7 +73,6 @@ final class FrontifyDirective {
       return Json::encode($result);
     }
 
-    $focalPoint = $this->getFocalPoint($image['src'], TRUE);
     $ratio = $originalImageHeight / $originalImageWidth;
     // The image width and height in the response should be the same as the ones
     // sent as parameters.
