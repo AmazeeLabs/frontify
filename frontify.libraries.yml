@@ -5,7 +5,7 @@ frontify_finder:
     url: https://github.com/Frontify/frontify-finder
     gpl-compatible: true
   js:
-    https://unpkg.com/@frontify/frontify-finder@latest/dist/index.js: { type: external, minified: true }
+    js/frontify_finder.js: { minified: true }
 
 frontify_media_library:
   js:
