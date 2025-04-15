@@ -33,13 +33,22 @@ final class FrontifyDirective {
     }
 
     $imageSize = getimagesize($args->value);
-    $focalPoint = $this->getFocalPoint($args->value, TRUE);
+
+    // Image size can be false, example: SVG.
+    if (!$imageSize) {
+      return [
+        'src' => $args->value,
+        'width' => NULL,
+        'height' => NULL,
+        'focalPoint' => NULL,
+      ];
+    }
 
     return [
       'src' => $args->value,
       'width' => $imageSize[0],
       'height' => $imageSize[1],
-      'focalPoint' => $focalPoint,
+      'focalPoint' => $this->getFocalPoint($args->value, TRUE),
     ];
   }
 
@@ -61,15 +70,26 @@ final class FrontifyDirective {
     $focalPoint = $image['focalPoint'];
 
     $width = $args->args['width'];
-    // height can be null, use the ratio to set it in this case
+    // Height can be null, we will use the ratio to set it in this case.
     $height = $args->args['height'];
     $sizes = $args->args['sizes'] ?? [];
 
-    $result = $image;
+    $result['src'] = $image['src'];
     $result['originalSrc'] = $image['src'];
 
     // If no width is given we just return the original image url.
-    if (empty($width)) {
+    if (empty($width) || empty($originalImageWidth)) {
+      // Prevent to encode empty values
+      // that will make the Frontify query fail.
+      if (!empty($image['width'])) {
+        $result['width'] = $image['width'];
+      }
+      if (!empty($image['height'])) {
+        $result['height'] = $image['height'];
+      }
+      if (!empty($image['focalPoint'])) {
+        $result['fp'] = $image['focalPoint'];
+      }
       return Json::encode($result);
     }
 
