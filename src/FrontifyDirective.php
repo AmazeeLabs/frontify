@@ -212,13 +212,14 @@ final class FrontifyDirective {
       }
       $imageConfig = [
         'width' => $sizesElement[0],
+        'height' => $sizesElement[1],
       ];
 
       // If we know the default dimensions of the image, and the width of the
       // desired one, we can also calculate the height of it.
-      if (!empty($defaultDimensions['width']) && !empty($defaultDimensions['height'])) {
-        $imageConfig['height'] = (int) round(($imageConfig['width'] * $defaultDimensions['height']) / $defaultDimensions['width']);
-      }
+      //      if (!empty($defaultDimensions['width']) && !empty($defaultDimensions['height'])) {
+      //        $imageConfig['height'] = (int) round(($imageConfig['width'] * $defaultDimensions['height']) / $defaultDimensions['width']);
+      //      }
       $carry[] = $this->getFrontifyImageUrl($originalUrl, $imageConfig, $focalPoint) . ' ' . $imageConfig['width'] . 'w';
       return $carry;
     }, []);
