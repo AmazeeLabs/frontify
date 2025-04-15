@@ -232,7 +232,6 @@ final class FrontifyDirective {
       }
       $imageConfig = [
         'width' => $sizesElement[0],
-        'height' => $sizesElement[1],
       ];
 
       // If we know the default dimensions of the image, and the width of the
