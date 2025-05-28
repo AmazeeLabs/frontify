@@ -146,7 +146,9 @@ final class FrontifyDirective {
     $mediaImages = $mediaStorage->loadByProperties([$frontifyField . '.uri' => $src]);
     $mediaImage = NULL;
     if (!empty($mediaImages)) {
-      $mediaImage = reset($mediaImages);
+      // Always get the latest instance of a media
+      // if deduplicate is not configured.
+      $mediaImage = end($mediaImages);
     }
 
     if (
