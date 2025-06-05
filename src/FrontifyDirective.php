@@ -99,20 +99,20 @@ final class FrontifyDirective {
     // @todo Unless the width sent is bigger than the width of the original
     // image, since we should not scale up. TBD what to do in this case.
     $result['width'] = $width;
-    $result['height'] = $height ?: round($width * $ratio);
+    $result['height'] = $height ?: (int) round($width * $ratio);
 
     $result['src'] = $this->getFrontifyImageUrl(
       $image['src'],
-      ['width' => $width, 'height' => $height],
+      ['width' => $result['width'], 'height' => $result['height']],
       $focalPoint
     );
 
     if (!empty($sizes)) {
-      $result['sizes'] = $this->buildSizesString($sizes, $width);
+      $result['sizes'] = $this->buildSizesString($sizes, $result['width']);
       $result['srcset'] = $this->buildSrcSetString(
         $image['src'],
         $sizes,
-        ['width' => $width, 'height' => $height],
+        ['width' => $result['width'], 'height' => $result['height']],
         $focalPoint
       );
     }
@@ -233,14 +233,14 @@ final class FrontifyDirective {
         return $carry;
       }
       $imageConfig = [
-        'width' => $sizesElement[0],
+        'width' => $sizesElement[1],
       ];
 
       // If we know the default dimensions of the image, and the width of the
       // desired one, we can also calculate the height of it.
-      //      if (!empty($defaultDimensions['width']) && !empty($defaultDimensions['height'])) {
-      //        $imageConfig['height'] = (int) round(($imageConfig['width'] * $defaultDimensions['height']) / $defaultDimensions['width']);
-      //      }
+      if (!empty($defaultDimensions['width']) && !empty($defaultDimensions['height'])) {
+        $imageConfig['height'] = (int) round(($imageConfig['width'] * $defaultDimensions['height']) / $defaultDimensions['width']);
+      }
       $carry[] = $this->getFrontifyImageUrl($originalUrl, $imageConfig, $focalPoint) . ' ' . $imageConfig['width'] . 'w';
       return $carry;
     }, []);
