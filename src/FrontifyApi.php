@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\frontify;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Psr\Http\Client\ClientInterface;
@@ -23,6 +24,7 @@ final class FrontifyApi {
     private readonly ClientInterface $httpClient,
     private readonly ConfigFactoryInterface $configFactory,
     private readonly MessengerInterface $messenger,
+    private readonly LoggerChannelFactory $loggerChannelFactory,
   ) {}
 
   /**
@@ -63,7 +65,9 @@ final class FrontifyApi {
       $result = json_decode((string) $response->getBody(), TRUE, 512, JSON_THROW_ON_ERROR);
     }
     catch (\Exception $e) {
-      $this->messenger->addError($this->t('Error: @message', ['@message' => $e->getMessage()]));
+      $error = $this->t('Error: @message', ['@message' => $e->getMessage()]);
+      $this->loggerChannelFactory->get('frontify')->error($error);
+      $this->messenger->addError($error);
     }
 
     return $result;
@@ -99,7 +103,9 @@ final class FrontifyApi {
       }
     }
     catch (\Exception $e) {
-      $this->messenger->addError($this->t('Error: @message', ['@message' => $e->getMessage()]));
+      $error = $this->t('Error: @message', ['@message' => $e->getMessage()]);
+      $this->loggerChannelFactory->get('frontify')->error($error);
+      $this->messenger->addError($error);
     }
 
     return [];
@@ -128,7 +134,9 @@ final class FrontifyApi {
       }
     }
     catch (\Exception $e) {
-      $this->messenger->addError($this->t('Error: @message', ['@message' => $e->getMessage()]));
+      $error = $this->t('Error: @message', ['@message' => $e->getMessage()]);
+      $this->loggerChannelFactory->get('frontify')->error($error);
+      $this->messenger->addError($error);
     }
 
     return null;
@@ -166,7 +174,9 @@ final class FrontifyApi {
       }
     }
     catch (\Exception $e) {
-      $this->messenger->addError($this->t('Error: @message', ['@message' => $e->getMessage()]));
+      $error = $this->t('Error: @message', ['@message' => $e->getMessage()]);
+      $this->loggerChannelFactory->get('frontify')->error($error);
+      $this->messenger->addError($error);
     }
 
     return NULL;
