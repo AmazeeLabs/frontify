@@ -63,7 +63,7 @@ final class FrontifyApi {
       $result = json_decode((string) $response->getBody(), TRUE, 512, JSON_THROW_ON_ERROR);
     }
     catch (\Exception $e) {
-      $this->messenger->addError('Error: @message', ['@message' => $e->getMessage()]);
+      $this->messenger->addError($this->t('Error: @message', ['@message' => $e->getMessage()]));
     }
 
     return $result;
@@ -99,7 +99,7 @@ final class FrontifyApi {
       }
     }
     catch (\Exception $e) {
-      $this->messenger->addError('Error: @message', ['@message' => $e->getMessage()]);
+      $this->messenger->addError($this->t('Error: @message', ['@message' => $e->getMessage()]));
     }
 
     return [];
@@ -128,7 +128,7 @@ final class FrontifyApi {
       }
     }
     catch (\Exception $e) {
-      $this->messenger->addError('Error: @message', ['@message' => $e->getMessage()]);
+      $this->messenger->addError($this->t('Error: @message', ['@message' => $e->getMessage()]));
     }
 
     return null;
@@ -166,7 +166,7 @@ final class FrontifyApi {
       }
     }
     catch (\Exception $e) {
-      $this->messenger->addError('Error: @message', ['@message' => $e->getMessage()]);
+      $this->messenger->addError($this->t('Error: @message', ['@message' => $e->getMessage()]));
     }
 
     return NULL;
