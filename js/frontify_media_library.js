@@ -78,6 +78,7 @@
                     //'tif',
                     'tiff',
                     'webp',
+                    'mp4',
                   ],
                   inverted: false,
                 },

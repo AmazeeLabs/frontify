@@ -20,6 +20,7 @@ and the field type can be used for Video, Documents, ...
 - Integrates with Gutenberg Media library
 - Integrates with [GraphQL v4 directives](https://packagist.org/packages/amazeelabs/graphql_directives) for responsive images
 - Focal point support
+- Video provider
 
 ### Use case for mime type groups
 
@@ -132,7 +133,7 @@ function my_custom_frontify_media_insert(EntityInterface $entity) {
 
 # Roadmap for contribution
 
-- Create other media types providers than Image (Video, Document)
+- Create Document media type provider
 - Configure mime type groups on the media provider
 - Config install and schema
 - Upgrade path for the new field type schema

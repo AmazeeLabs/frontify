@@ -24,12 +24,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
- * Provides a media source plugin for Frontify remote images.
+ * Provides a media source plugin for Frontify remote videos.
  */
 #[MediaSource(
-  id: "frontify_image",
-  label: new TranslatableMarkup("Frontify Image"),
-  description: new TranslatableMarkup("Frontify remote media image."),
+  id: "frontify_video",
+  label: new TranslatableMarkup("Frontify Video"),
+  description: new TranslatableMarkup("Frontify remote media video."),
   allowed_field_types: ["frontify_asset_field"],
   default_thumbnail_filename: "no-thumbnail.png",
   thumbnail_alt_metadata_attribute: "thumbnail_alt_value",
@@ -37,13 +37,13 @@ use Symfony\Component\Mime\MimeTypes;
     "media_library_add" => FrontifyMediaImageForm::class,
   ],
 )]
-class FrontifyImage extends MediaFrontifySourceBase {
+class FrontifyVideo extends MediaFrontifySourceBase {
 
   /**
    * {@inheritdoc}
    */
   public function createSourceField(MediaTypeInterface $type): FieldConfigInterface|EntityInterface {
-    return parent::createSourceField($type)->set('label', 'Frontify Image');
+    return parent::createSourceField($type)->set('label', 'Frontify Video');
   }
 
 }
