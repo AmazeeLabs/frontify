@@ -42,7 +42,7 @@ final class FrontifyFieldsUi {
   ) {}
 
   public function getFieldsUi(FrontifyUiConfig $config): array {
-    $fields = []; 
+    $fields = [];
 
     $drupalConfig = \Drupal::config('frontify.settings');
     $frontifyApiUrl = $drupalConfig->get('frontify_api_url');
