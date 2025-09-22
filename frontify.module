@@ -36,7 +36,7 @@ function frontify_preprocess_views_view(&$variables) {
   ) {
     $isGutenbergOpener = str_contains($variables['rows']['#action'], 'media_library_opener_id=gutenberg.media_library.opener');
     // @todo generalize to other Frontify media types.
-    $isFrontifyMediaType = str_contains($variables['rows']['#action'], 'media_library_selected_type=frontify_image');
+    $isFrontifyMediaType = str_contains($variables['rows']['#action'], 'media_library_selected_type=frontify');
     if ($isFrontifyMediaType && $isGutenbergOpener) {
       $variables['attributes']['class'][] = 'visually-hidden';
     }

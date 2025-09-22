@@ -23,6 +23,7 @@ final class FrontifyUiConfig {
   public bool $hide_open_button = TRUE;
   public bool $enable_image_preview = FALSE;
   public string $frontify_context = 'media_library';
+  public array $allowed_extensions = [];
 }
 
 /**
@@ -41,7 +42,7 @@ final class FrontifyFieldsUi {
   ) {}
 
   public function getFieldsUi(FrontifyUiConfig $config): array {
-    $fields = [];
+    $fields = []; 
 
     $drupalConfig = \Drupal::config('frontify.settings');
     $frontifyApiUrl = $drupalConfig->get('frontify_api_url');
@@ -94,6 +95,7 @@ final class FrontifyFieldsUi {
               'debug_mode' => $frontifyDebugMode === 1,
               'hide_open_button' => $config->hide_open_button,
               'enable_image_preview' => $config->enable_image_preview,
+              'allowed_extensions' => $config->allowed_extensions,
             ],
         ],
       ],

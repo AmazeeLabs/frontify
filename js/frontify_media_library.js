@@ -53,6 +53,15 @@
 
         try {
           // Instantiate the Frontify finder.
+          const allowedExtensions = drupalSettings.Frontify.allowed_extensions || [
+            'gif',
+            'jpeg',
+            'jpg',
+            'png',
+            'svg',
+            'webp',
+          ];
+
           const $finder = await window.FrontifyFinder.create({
             clientId: 'drupal',
             domain: drupalSettings.Frontify.api_url,
@@ -65,21 +74,7 @@
               filters: [
                 {
                   key: 'ext',
-                  values: [
-                    //'ai',
-                    //'bmp',
-                    //'eps',
-                    'gif',
-                    //'heif',
-                    'jpeg',
-                    'jpg',
-                    'png',
-                    'svg',
-                    //'tif',
-                    'tiff',
-                    'webp',
-                    'mp4',
-                  ],
+                  values: allowedExtensions,
                   inverted: false,
                 },
               ],

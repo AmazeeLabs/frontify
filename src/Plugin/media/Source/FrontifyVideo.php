@@ -13,6 +13,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\frontify\Form\FrontifyMediaImageForm;
+use Drupal\frontify\Form\FrontifyMediaVideoForm;
 use Drupal\media\Attribute\MediaSource;
 use Drupal\media\MediaInterface;
 use Drupal\media\MediaSourceBase;
@@ -34,7 +35,7 @@ use Symfony\Component\Mime\MimeTypes;
   default_thumbnail_filename: "no-thumbnail.png",
   thumbnail_alt_metadata_attribute: "thumbnail_alt_value",
   forms: [
-    "media_library_add" => FrontifyMediaImageForm::class,
+    "media_library_add" => FrontifyMediaVideoForm::class,
   ],
 )]
 class FrontifyVideo extends MediaFrontifySourceBase {

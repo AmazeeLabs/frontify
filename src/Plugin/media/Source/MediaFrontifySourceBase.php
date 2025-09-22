@@ -123,6 +123,13 @@ abstract class MediaFrontifySourceBase extends MediaSourceBase implements MediaS
       '#description' => $this->t('Disable the global "Add" feature (example: /media/add/frontify_image). When using a DAM, it make sense to only add a reference via host entities and not create them globally. This is especially the case since we replace the Media Library with the Frontify Finder.'),
     ];
 
+    $form['allowed_extensions'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Allowed extensions'),
+      '#default_value' => $this->configuration['allowed_extensions'],
+      '#description' => $this->t('Allowed extensions, space delimited.'),
+    ];
+
     return $form;
   }
 
@@ -142,6 +149,7 @@ abstract class MediaFrontifySourceBase extends MediaSourceBase implements MediaS
     return parent::defaultConfiguration() + [
       'deduplicate' => 1,
       'disable_global_add' => 1,
+      'allowed_extensions' => 'gif jpeg jpg png svg webp',
     ];
   }
 
