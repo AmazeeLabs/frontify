@@ -134,7 +134,6 @@ function my_custom_frontify_media_insert(EntityInterface $entity) {
 # Roadmap for contribution
 
 - Create Document media type provider
-- Configure mime type groups on the media provider
 - Config install and schema
 - Upgrade path for the new field type schema
 - Adjust the default field widget and field formatter accordingly
