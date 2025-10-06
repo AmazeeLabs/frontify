@@ -60,7 +60,7 @@ abstract class FrontifyMediaFormBase extends AddFormBase {
         '#type' => 'inline_template',
         '#template' => '<p>{{ text }}</p>',
         '#context' => [
-          'text' => $this->formatPlural(count($added_media), 'The Frontify asset has been imported but not yet saved. Fill any extra field. Clicking on Insert saves it.', 'The Frontify assets have been imported but not yet saved. Fill any extra field. Clicking on Insert saves assets.'),
+          'text' => $this->formatPlural(count($added_media), 'The Frontify image is imported. Edit any field then click on Insert.', 'The Frontify images are imported. Edit any field then click on Insert.'),
         ],
       ];
 
@@ -219,6 +219,7 @@ abstract class FrontifyMediaFormBase extends AddFormBase {
       ],
     ]);
     $media->setName($form_state->getValue('name'));
+    $media->save();
     return $media;
   }
 
