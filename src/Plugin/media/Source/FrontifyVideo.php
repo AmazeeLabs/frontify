@@ -7,6 +7,7 @@ use Drupal\Core\Field\FieldConfigInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\frontify\Form\FrontifyMediaVideoForm;
 use Drupal\media\Attribute\MediaSource;
+use Drupal\media\MediaInterface;
 use Drupal\media\MediaTypeInterface;
 
 /**
@@ -30,6 +31,37 @@ class FrontifyVideo extends MediaFrontifySourceBase {
    */
   public function createSourceField(MediaTypeInterface $type): FieldConfigInterface|EntityInterface {
     return parent::createSourceField($type)->set('label', 'Frontify Video');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getMetadata(MediaInterface $media, $attribute_name) {
+    $url = $media->get($this->configuration['source_field'])->uri;
+
+    switch ($attribute_name) {
+      // Name is already set in FrontifyMediaImageForm::createMediaFromValues().
+      case 'thumbnail_width':
+        return static::THUMBNAIL_WIDTH;
+
+      case 'thumbnail_height':
+        return static::THUMBNAIL_HEIGHT;
+
+      // Thumbnail is by default the video file (mp4, ...), that will trigger
+      // FileExtensionContraint limited to 'png gif jpg jpeg webp'.
+      // So just use the generic video thumbnail for now.
+      // MediaFrontifySourceBase::getLocalThumbnailUri should be extended
+      // to generate the actual thumbnail from the video.
+      case 'thumbnail_uri':
+        return 'public://media-icons/generic/video.png';
+
+      case 'thumbnail_alt_value':
+        // Name is fine for this use case.
+        return $media->getName();
+
+      default:
+        return parent::getMetadata($media, $attribute_name);
+    }
   }
 
 }
