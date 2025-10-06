@@ -17,7 +17,7 @@ use Drupal\link\Plugin\Field\FieldWidget\LinkWidget;
 #[FieldWidget(
   id: "frontify_asset_field_widget",
   label: new TranslatableMarkup("Frontify asset"),
-  description: new TranslatableMarkup("Exposes Frontify image fields."),
+  description: new TranslatableMarkup("Exposes Frontify asset fields."),
   field_types: ["frontify_asset_field"],
 )]
 class FrontifyAssetFieldWidget extends LinkWidget {

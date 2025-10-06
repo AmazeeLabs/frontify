@@ -18,7 +18,7 @@ class MediaLibraryUiBuilder extends BaseMediaLibraryUiBuilder {
   protected function buildLibraryContent(MediaLibraryState $state) {
     $opener = $state->getOpenerId();
     // @todo handle all possible media types created by the Frontify source plugin.
-    $isFrontifyMediaType = $state->getSelectedTypeId() === 'frontify_image';
+    $isFrontifyMediaType = in_array($state->getSelectedTypeId(), ['frontify_image', 'frontify_video']);
     // The Gutenberg implementation requires to get the media library view
     // in the DOM.
     $hideMediaLibraryView = $isFrontifyMediaType && $opener !== 'gutenberg.media_library.opener';

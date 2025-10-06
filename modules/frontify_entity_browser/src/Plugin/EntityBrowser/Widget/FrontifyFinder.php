@@ -196,7 +196,7 @@ class FrontifyFinder extends WidgetBase {
       ->loadMultiple();
     if ($media_types) {
       foreach ($media_types as $key => $media_bundle) {
-        if ("frontify_image" !== $media_bundle->get('source')) {
+        if (!in_array($media_bundle->get('source'), ['frontify_image', 'frontify_video'])) {
           unset($media_types[$key]);
         }
       }
