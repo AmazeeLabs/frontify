@@ -32,12 +32,41 @@ final class FrontifyDirective {
       return NULL;
     }
 
-    $imageSize = getimagesize($args->value);
+    // The value can be a media, skip CDN calls in this case
+    // as we should already have the metadata.
+    // Usage example:
+    // @frontifyImageProps on a Media entity.
+    if ($args->value instanceof MediaInterface) {
+      $media = $args->value;
+      if (
+        !$media instanceof MediaInterface ||
+        !$media->hasField('field_media_frontify_image') ||
+        $media->get('field_media_frontify_image')->isEmpty()
+      ) {
+        return NULL;
+      }
+      $imageUrl = $media->get('field_media_frontify_image')->uri;
+      $rawMetadata = $media->get('field_media_frontify_image')->metadata;
+      $metadata = Json::decode($rawMetadata);
+      $width = !empty($metadata['width']) ? $metadata['width'] : NULL;
+      $height = !empty($metadata['height']) ? $metadata['height'] : NULL;
+    // If this is a string, use getimagesize().
+    // Usage example:
+    // @resolveProperty(path: "field_media_frontify_image.uri") @frontifyImageProps
+    } elseif (is_string($args->value)) {
+      $imageUrl = $args->value;
+      $imageSize = getimagesize($imageUrl);
+      $width = $imageSize ? $imageSize[0] : NULL;
+      $height = $imageSize ? $imageSize[1] : NULL;
+    // Ignore the rest.
+    } else {
+      return NULL;
+    }
 
-    // Image size can be false, example: SVG.
-    if (!$imageSize) {
+    // Image size is not available in some cases, example: SVG.
+    if (!$width || !$height) {
       return [
-        'src' => $args->value,
+        'src' => $imageUrl,
         'width' => NULL,
         'height' => NULL,
         'focalPoint' => NULL,
@@ -45,10 +74,10 @@ final class FrontifyDirective {
     }
 
     return [
-      'src' => $args->value,
-      'width' => $imageSize[0],
-      'height' => $imageSize[1],
-      'focalPoint' => $this->getFocalPoint($args->value, TRUE),
+      'src' => $imageUrl,
+      'width' => $width,
+      'height' => $height,
+      'focalPoint' => $this->getFocalPoint($imageUrl, TRUE),
     ];
   }
 
