@@ -82,6 +82,9 @@ abstract class MediaFrontifySourceBase extends MediaSourceBase implements MediaS
         return static::THUMBNAIL_HEIGHT;
 
       case 'thumbnail_uri':
+        if (!$this->supportsThumbnail($url)) {
+          return 'public://media-icons/generic/no-thumbnail.png';
+        }
         $uri = $this->getLocalThumbnailUri(
           $url . '?width=' . static::THUMBNAIL_WIDTH . '&quality=' . static::THUMBNAIL_QUALITY
         ) ?: parent::getMetadata($media, 'thumbnail_uri');
@@ -151,6 +154,26 @@ abstract class MediaFrontifySourceBase extends MediaSourceBase implements MediaS
       'disable_global_add' => 1,
       'allowed_extensions' => 'gif jpeg jpg png svg webp',
     ];
+  }
+
+  /**
+   * Checks if a given uri supports the thumbnail generation.
+   *
+   * Use cases: svg and other unsupported formats.
+   *
+   * @param string $uri
+   *
+   * @return bool
+   */
+  private function supportsThumbnail(string $uri): bool {
+    $path = parse_url($uri, PHP_URL_PATH);
+    if ($path) {
+      $extension = mb_strtolower(pathinfo($path, PATHINFO_EXTENSION));
+      if ($extension && in_array($extension, ['jpg', 'jpeg', 'gif', 'png', 'webp'])) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
